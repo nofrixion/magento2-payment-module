@@ -50,3 +50,6 @@ Nofrixion online payments for Magento 2
 
 
 
+## DEV NOTES
+- The order is created during the call to "/rest/default/V1/carts/mine/payment-information"
+- which was called from JS "placeNewOrder()"

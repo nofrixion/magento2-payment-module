@@ -21,7 +21,9 @@
             <!-- ko template: getTemplate() --><!-- /ko -->
             <!--/ko-->
         </div>
-        <p data-bind="html: getInstructions()"></p>
+
+        <div id="nf-payelement" style="border: none; width: 350px; height: 800px;"></div>
+
         <div class="checkout-agreements-block">
             <!-- ko foreach: $parent.getRegion('before-place-order') -->
                 <!-- ko template: getTemplate() --><!-- /ko -->
@@ -44,4 +46,3 @@
         </div>
     </div>
 </div>
-        
