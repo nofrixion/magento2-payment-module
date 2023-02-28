@@ -116,7 +116,10 @@ define(
                 this.isInitializing(false);
                 console.log('Initializing Nofrixion payment form...');
 
-                require(['https://api-sandbox.nofrixion.com/js/payelement.js']);
+                // Disable the "Place Order" button
+                this.isPlaceOrderActionAllowed(false);
+
+                require([window.NOFRIXION_JS]);
 
                 let createPaymentRequestUrl = params.createPaymentRequestUrl;
 
@@ -127,9 +130,16 @@ define(
                         return response.json()
                     })
                     .then(data => {
-                        let paymentRequestID = data.id;
-                        let nfPayElement = new NoFrixionPayElement(paymentRequestID, 'nf-payelement', params.apiBaseUrl);
+                        const paymentRequestID = data.id;
+                        const customCss = '';
+                        const showPayButton = false;
+                        const domElementId = 'nf-payelement';
+
+                        const nfPayElement = new NoFrixionPayElement(paymentRequestID, domElementId, params.apiBaseUrl, customCss, showPayButton);
                         nfPayElement.load();
+
+                        // Enable the "Place Order" button
+                        this.isPlaceOrderActionAllowed(true);
 
                     })
                     .catch(error => {
@@ -144,24 +154,27 @@ define(
             },
 
             showError: function (message) {
+                debugger;
                 this.isLoading(false);
                 //this.isPlaceOrderEnabled(true);
                 this.messageContainer.addErrorMessage({"message": message});
             },
 
-            placeOrder: function()
-            {
-                debugger;
+            validate: function () {
+                return window.nfValidateForm();
+            },
+
+            placeOrder: function () {
                 this.messageContainer.clear();
 
-                if (!this.isPaymentFormComplete() && !this.getPaymentMethodId())
-                    return this.showError($t('Please complete your payment details.'));
+                // if (!this.isPaymentFormComplete() && !this.getPaymentMethodId())
+                //     return this.showError($t('Please complete your payment details.'));
 
-                if (!this.validate())
+                if (!this.validate()) {
                     return;
+                }
+                debugger;
 
-                this.clearErrors();
-                this.isPlaceOrderActionAllowed(false);
                 this.isLoading(true);
                 var placeNewOrder = this.placeNewOrder.bind(this);
                 var reConfirmPayment = this.onOrderPlaced.bind(this);
@@ -169,44 +182,31 @@ define(
 
                 if (this.isOrderPlaced()) // The order was already placed once but the payment failed
                 {
-                    updateCartAction(this.getPaymentMethodId(), function(result, outcome, response)
-                    {
+                    updateCartAction(this.getPaymentMethodId(), function (result, outcome, response) {
                         self.isLoading(false);
-                        try
-                        {
+                        try {
                             var data = JSON.parse(result);
-                            if (data.error)
-                            {
+                            if (data.error) {
                                 self.showError(data.error);
-                            }
-                            else if (data.redirect)
-                            {
+                            } else if (data.redirect) {
                                 $.mage.redirect(data.redirect);
-                            }
-                            else if (data.placeNewOrder)
-                            {
+                            } else if (data.placeNewOrder) {
                                 placeNewOrder();
-                            }
-                            else
-                            {
+                            } else {
                                 reConfirmPayment();
                             }
-                        }
-                        catch (e)
-                        {
+                        } catch (e) {
                             self.showError($t("The order could not be placed. Please contact us for assistance."));
                             console.error(e.message);
                         }
                     });
-                }
-                else
-                {
-                    try
-                    {
+                } else {
+                    try {
                         placeNewOrder();
-                    }
-                    catch (e)
-                    {
+
+                        // Trigger the hidden "Pay now" button
+                        window.nfpayByCard();
+                    } catch (e) {
                         self.showError($t("The order could not be placed. Please contact us for assistance."));
                         console.error(e.message);
                     }
@@ -215,26 +215,23 @@ define(
                 return false;
             },
 
-            placeNewOrder: function()
-            {
+            placeNewOrder: function () {
                 var self = this;
 
                 this.isLoading(false); // Needed for the terms and conditions checkbox
                 this.getPlaceOrderDeferredObject()
                     .fail(this.handlePlaceOrderErrors.bind(this))
                     .done(this.onOrderPlaced.bind(this))
-                    .always(function(response, status, xhr)
-                    {
-                        if (status != "success")
-                        {
+                    .always(function (response, status, xhr) {
+                        if (status !== "success") {
                             self.isLoading(false);
                             self.isPlaceOrderEnabled(true);
                         }
                     });
             },
 
-            onOrderPlaced: function(result, outcome, response)
-            {
+            onOrderPlaced: function (result, outcome, response) {
+                debugger;
                 if (!this.isOrderPlaced() && isNaN(result))
                     return this.softCrash("The order was placed but the response from the server did not include a numeric order ID.");
                 else
@@ -247,8 +244,7 @@ define(
                 // Non-card based confirms may redirect the customer externally. We restore the quote just before it in case the
                 // customer clicks the back button on the browser before authenticating the payment.
                 var self = this;
-                restoreQuoteAction(function()
-                {
+                restoreQuoteAction(function () {
                     // If we are confirming the payment with a saved method, we need a client secret and a payment method ID
                     var selectedMethod = self.getSelectedMethod("type");
 
@@ -266,8 +262,7 @@ define(
                     };
 
                     var dropDownSelection = self.selection();
-                    if (dropDownSelection && dropDownSelection.type == "card" && dropDownSelection.cvc == 1 && !isSetup)
-                    {
+                    if (dropDownSelection && dropDownSelection.type == "card" && dropDownSelection.cvc == 1 && !isSetup) {
                         confirmParams.payment_method_options = {
                             card: {
                                 cvc: self.cardCvcElement
@@ -279,18 +274,43 @@ define(
                 });
             },
 
-            confirm: function(methodType, confirmParams, clientSecret, isSetup, onConfirm, onFail)
+
+            handlePlaceOrderErrors: function (result) {
+                if (result && result.responseJSON && result.responseJSON.message)
+                    this.showError(result.responseJSON.message);
+                else {
+                    this.showError($t("The order could not be placed. Please contact us for assistance."));
+
+                    if (result && result.responseText)
+                        console.error(result.responseText);
+                    else
+                        console.error(result);
+                }
+            },
+
+            onConfirm: function(result)
             {
+                this.isLoading(false);
+                if (result.error)
+                {
+                    this.showError(result.error.message);
+                }
+                else
+                {
+                    var successUrl = this.getStripeParam("returnUrl");
+                    $.mage.redirect(successUrl);
+                }
+            },
+
+            confirm: function (methodType, confirmParams, clientSecret, isSetup, onConfirm, onFail) {
                 if (!clientSecret)
                     return this.softCrash("To confirm the payment, a client secret is necessary, but we don't have one.");
 
-                if (methodType && methodType != 'new')
-                {
+                if (methodType && methodType !== 'new') {
                     if (!confirmParams.payment_method)
                         return this.softCrash("To confirm the payment, a saved payment method must be selected, but we don't have one.");
 
-                    if (isSetup)
-                    {
+                    if (isSetup) {
                         if (methodType == "card")
                             stripe.stripeJs.confirmCardSetup(clientSecret, confirmParams).then(onConfirm, onFail);
                         else if (methodType == "sepa_debit")
@@ -303,9 +323,7 @@ define(
                             stripe.stripeJs.confirmUsBankAccountSetup(clientSecret, confirmParams).then(onConfirm, onFail);
                         else
                             this.showError($t("This payment method is not supported."));
-                    }
-                    else
-                    {
+                    } else {
                         if (methodType == "card")
                             stripe.stripeJs.confirmCardPayment(clientSecret, confirmParams).then(onConfirm, onFail);
                         else if (methodType == "sepa_debit")
@@ -319,20 +337,15 @@ define(
                         else
                             this.showError($t("This payment method is not supported."));
                     }
-                }
-                else
-                {
+                } else {
                     customerData.invalidate(['cart']);
 
                     var confirmParams = this.getConfirmParams();
 
                     // Confirm the payment using element
-                    if (isSetup)
-                    {
+                    if (isSetup) {
                         stripe.stripeJs.confirmSetup(confirmParams).then(onConfirm, onFail);
-                    }
-                    else
-                    {
+                    } else {
                         stripe.stripeJs.confirmPayment(confirmParams).then(onConfirm, onFail);
                     }
                 }

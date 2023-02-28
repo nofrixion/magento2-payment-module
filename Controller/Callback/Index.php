@@ -13,16 +13,19 @@ class Index implements \Magento\Framework\App\ActionInterface
     private \Magento\Checkout\Model\Session $checkoutSession;
     private \Magento\Framework\UrlInterface $url;
 
-    public function __construct(RequestInterface $request, \Nofrixion\Payments\Helper\Data $nofrixionHelper, \Magento\Checkout\Model\Session $checkoutSession, \Magento\Framework\UrlInterface $url)
+    public function __construct(RequestInterface $request, \Nofrixion\Payments\Helper\Data $nofrixionHelper, \Magento\Checkout\Model\Session $checkoutSession, \Magento\Framework\UrlInterface $url, \Magento\Quote\Api\CartManagementInterface $cartMgmt)
     {
         $this->nofrixionHelper = $nofrixionHelper;
         $this->request = $request;
         $this->checkoutSession = $checkoutSession;
         $this->url = $url;
+        $this->cartMgmt = $cartMgmt;
     }
 
     public function execute()
     {
+        $quoteId
+        $this->cartMgmt->placeOrder($quoteId);
 
         die('Callback page reached!');
 

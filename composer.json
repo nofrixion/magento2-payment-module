@@ -11,7 +11,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "nofrixion/moneymoov-php": "^1.1"
+        "nofrixion/moneymoov-php": "^1.1.2"
     },
     "autoload": {
         "files": [

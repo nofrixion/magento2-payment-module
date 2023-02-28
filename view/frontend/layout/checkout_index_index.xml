@@ -36,9 +36,10 @@
 					</item>
 				</argument>
 			</arguments>
+
 		</referenceBlock>
-<!--        <referenceContainer name="content">-->
-<!--            <block class="Nofrixion\Payments\Block\Js" name="nofrixion.js" />-->
-<!--        </referenceContainer>-->
+        <referenceContainer name="content">
+            <block class="Nofrixion\Payments\Block\Js" name="nofrixion.js" />
+        </referenceContainer>
 	</body>
 </page>

@@ -36,7 +36,7 @@ class Create implements \Magento\Framework\App\ActionInterface
         $customerEmail = $quote->getCustomerEmail();
         $currency = $quote->getQuoteCurrencyCode();
         $originUrl = $this->url->getBaseUrl(['_store' => $storeId]);
-        $callbackUrl = $this->url->getUrl('nofrixion/callback/index', ['_store' => $storeId]);
+        $callbackUrl = $this->url->getUrl('nofrixion/callback/index', ['_secure' => true]);
         $amount = PreciseNumber::parseString((string)$amount);
         $quoteId = $quote->getId();
         if ($quote->getCustomerId()) {

@@ -4,14 +4,16 @@
         <policy id="script-src">
             <values>
                 <value id="nofrixion_sandbox" type="host">api-sandbox.nofrixion.com</value>
-                <value id="nofrixion_productionx" type="host">api.nofrixion.com</value>
+                <value id="nofrixion_production" type="host">api.nofrixion.com</value>
+                <value id="nofrixion_dev" type="host">devnofrixion.azureedge.net</value>
                 <value id="nofrixion_cdn" type="host">cdn.nofrixion.com</value>
             </values>
         </policy>
         <policy id="style-src">
             <values>
                 <value id="nofrixion_sandbox" type="host">api-sandbox.nofrixion.com</value>
-                <value id="nofrixion_productionx" type="host">api.nofrixion.com</value>
+                <value id="nofrixion_production" type="host">api.nofrixion.com</value>
+                <value id="nofrixion_dev" type="host">devnofrixion.azureedge.net</value>
             </values>
         </policy>
         <policy id="img-src">
