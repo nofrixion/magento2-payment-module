@@ -1,55 +1,29 @@
-# Mage2 Module Nofrixion Payments
+# Magento 2 Module for Nofrixion Payments
 
-    ``nofrixion/module-payments``
-
- - [Main Functionalities](#markdown-header-main-functionalities)
- - [Installation](#markdown-header-installation)
- - [Configuration](#markdown-header-configuration)
- - [Specifications](#markdown-header-specifications)
- - [Attributes](#markdown-header-attributes)
-
-
-## Main Functionalities
-Nofrixion online payments for Magento 2
+NoFrixion.com online payments for your Magento 2 store.
 
 ## Installation
 \* = in production please use the `--keep-generated` option
 
-### Type 1: Zip file
-
- - Unzip the zip file in `app/code/Nofrixion`
- - Enable the module by running `php bin/magento module:enable Nofrixion_Payments`
- - Apply database updates by running `php bin/magento setup:upgrade`\*
- - Flush the cache by running `php bin/magento cache:flush`
-
-### Type 2: Composer
-
- - Make the module available in a composer repository for example:
-    - private repository `repo.magento.com`
-    - public repository `packagist.org`
-    - public github repository as vcs
- - Add the composer repository to the configuration by running `composer config repositories.repo.magento.com composer https://repo.magento.com/`
- - Install the module composer by running `composer require nofrixion/module-payments`
- - enable the module by running `php bin/magento module:enable Nofrixion_Payments`
- - apply database updates by running `php bin/magento setup:upgrade`\*
- - Flush the cache by running `php bin/magento cache:flush`
-
+- Install the files:
+  - Using composer (recommended). Run `composer require nofrixion/module-payments`
+  - Using a ZIP file (not recommended). Unzip the ZIP file in `app/code/Nofrixion/Payments`
+- Enable the module by running `php bin/magento module:enable Nofrixion_Payments`
+- Apply database updates by running `php bin/magento setup:upgrade` (for production, also add the parameter `--keep-generated` or you will need to run `setup:di:compile` again.)
+- Flush the cache by running `php bin/magento cache:flush`
 
 ## Configuration
 
- - Nofrixion - payment/nofrixion/*
+Please find all configuration opens in Magento Admin > Stores > Configuration > Payment Methods > NoFrixion
 
+- Enter your API key
+- Set the mode to production or sandbox
+- Change the other settings to your liking
 
-## Specifications
+# Troubleshooting
+If something goes wrong during installation or during deployment, just follow the typical Magento 2 module installation steps. The NoFrixion Payments module follows all Magento 2 standards and should not be any different.
 
- - Payment Method
-	- Nofrixion
-
-
-## Attributes
-
-
-
-## DEV NOTES
-- The order is created during the call to "/rest/default/V1/carts/mine/payment-information"
-- which was called from JS "placeNewOrder()"
+1. Switch or make sure you are in developer mode
+2. Remove all temporary files to make sure your latest changes are being applied. This is done by emptying the cache (typically in `MAGENTO_ROOT/var/cache` or your cache server, like Redis) and the files generated in `MAGENTO_ROOT/generated` and `MAGENTO_ROOT/var/view_preprocessed`.
+3. Try again
+4. If this is a production server, make sure you switch back to production mode
