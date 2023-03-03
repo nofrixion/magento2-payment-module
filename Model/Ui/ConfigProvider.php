@@ -5,19 +5,16 @@ namespace Nofrixion\Payments\Model\Ui;
 
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Framework\UrlInterface;
-use Nofrixion\Payments\Helper\Data as NoFrixionHelper;
 use Nofrixion\Payments\Model\Payment\Nofrixion;
 
 class ConfigProvider implements ConfigProviderInterface
 {
 
     private UrlInterface $url;
-    private NoFrixionHelper $helper;
 
-    public function __construct(UrlInterface $url, NoFrixionHelper $helper)
+    public function __construct(UrlInterface $url)
     {
         $this->url = $url;
-        $this->helper = $helper;
     }
 
     public function getConfig()
@@ -25,10 +22,10 @@ class ConfigProvider implements ConfigProviderInterface
         $data = [
             'payment' => [
                 Nofrixion::CODE => [
-                    'initParams' => [
-                        'createPaymentRequestUrl' => $this->url->getUrl('nofrixion/paymentRequest/create'),
-                        'apiBaseUrl' => $this->helper->getApiBaseUrl()
-                    ]
+                    'paymentRedirectUrl' => $this->url->getUrl('nofrixion/redirect/forwardToPayment', [
+                        '_secure' => true,
+                        '_nosid' => true
+                    ])
                 ]
             ]
         ];

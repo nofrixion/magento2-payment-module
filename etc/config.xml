@@ -6,7 +6,6 @@
 				<active>1</active>
                 <mode>0</mode>
 				<model>Nofrixion\Payments\Model\Payment\Nofrixion</model>
-				<order_status>pending</order_status>
 				<title>Nofrixion</title>
 				<allowspecific>0</allowspecific>
 				<group>offline</group>

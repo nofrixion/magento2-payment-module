@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Nofrixion\Payments\Block;
@@ -21,10 +22,8 @@ class Js extends AbstractBlock
         if ($this->helper->isProductionMode()) {
             $src = 'https://api.nofrixion.com/js/payelement.js';
         } else {
-            //$src = 'https://api-sandbox.nofrixion.com/js/payelement.js';
             $src = 'https://devnofrixion.azureedge.net/nofrixion.js';
         }
-        //return '<script src="' . $src . '"></script>';
-        return '<script>var NOFRIXION_JS = "'.$src.'";</script>';
+        return '<script>var NOFRIXION_JS = "' . $src . '";</script>';
     }
 }
