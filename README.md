@@ -3,7 +3,6 @@
 NoFrixion.com online payments for your Magento 2 store.
 
 ## Installation
-\* = in production please use the `--keep-generated` option
 
 - Install the files:
   - Using composer (recommended). Run `composer require nofrixion/module-payments`
