@@ -5,7 +5,7 @@ NoFrixion.com online payments for your Magento 2 store.
 ## Installation
 
 - Install the files:
-  - Using composer (recommended). Run `composer require nofrixion/module-payments`
+  - Using composer (recommended). Run `composer require nofrixion/magento2-payments-module`
   - Using a ZIP file (not recommended). Unzip the ZIP file in `app/code/Nofrixion/Payments`
 - Enable the module by running `php bin/magento module:enable Nofrixion_Payments`
 - Apply database updates by running `php bin/magento setup:upgrade` (for production, also add the parameter `--keep-generated` or you will need to run `setup:di:compile` again.)
