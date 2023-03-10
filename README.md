@@ -13,7 +13,7 @@ NoFrixion.com online payments for your Magento 2 store.
 
 ## Configuration
 
-Please find all configuration opens in Magento Admin > Stores > Configuration > Payment Methods > NoFrixion
+Please find all configuration opens in Magento Admin > Stores > Configuration > Sales > Payment Methods > NoFrixion
 
 - Enter your API key
 - Set the mode to production or sandbox
