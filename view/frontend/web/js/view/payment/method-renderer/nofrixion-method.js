@@ -10,7 +10,9 @@ define(
                 template: 'Nofrixion_Payments/payment/nofrixion',
             },
             redirectAfterPlaceOrder: false,
-            externalRedirectUrl: window.checkoutConfig.payment.nofrixion.paymentRedirectUrl
+            afterPlaceOrder: function () {
+                $.mage.redirect(window.checkoutConfig.payment.nofrixion.paymentRedirectUrl);
+            }
         });
     }
 );
