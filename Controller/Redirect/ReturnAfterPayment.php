@@ -15,7 +15,6 @@ use Magento\Sales\Model\OrderFactory;
 use Magento\Store\Model\StoreManagerInterface;
 use Nofrixion\Payments\Helper\Data;
 use Psr\Log\LoggerInterface;
-use Storefront\BTCPay\Controller\Cart\Restore;
 
 class ReturnAfterPayment implements \Magento\Framework\App\ActionInterface
 {
@@ -28,7 +27,7 @@ class ReturnAfterPayment implements \Magento\Framework\App\ActionInterface
     private StoreManagerInterface $storeManager;
     private RedirectFactory $resultRedirectFactory;
 
-    public function __construct(StoreManagerInterface $storeManager, RequestInterface $request, LoggerInterface $logger, UrlInterface $url, RedirectFactory $resultRedirectFactory, PageFactory $resultPageFactory, Data $nofrixionHelper, OrderFactory $orderFactory, Session $checkoutSession, Restore $cartRestorer)
+    public function __construct(StoreManagerInterface $storeManager, RequestInterface $request, LoggerInterface $logger, UrlInterface $url, RedirectFactory $resultRedirectFactory, PageFactory $resultPageFactory, Data $nofrixionHelper, OrderFactory $orderFactory, Session $checkoutSession)
     {
         $this->storeManager = $storeManager;
         $this->request = $request;
