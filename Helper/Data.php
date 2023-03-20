@@ -76,6 +76,7 @@ class Data
         $amount = $order->getTotalDue();
         $customerEmail = $order->getCustomerEmail();
         $currency = $order->getOrderCurrencyCode();
+        $paymentMethodTypes = array("card", "pisp");
         $originUrl = $this->url->getBaseUrl(['_store' => $storeId]);
         $nofrixionOrderId = $this->encodeOrderId($order);
         $callbackUrl = $this->url->getUrl('nofrixion/redirect/returnAfterPayment', ['_secure' => true, 'nofrixion_order_id' => $nofrixionOrderId]);
@@ -89,7 +90,7 @@ class Data
         $createCardToken = true;
         $client = $this->getPaymentRequestClient($storeId);
         $originUrl = str_replace('http://', 'https://', $originUrl);
-        $paymentRequest = $client->createPaymentRequest($originUrl, $callbackUrl, $amount, $customerEmail, $currency, null, $nofrixionOrderId, $createCardToken, $customerId);
+        $paymentRequest = $client->createPaymentRequest($originUrl, $callbackUrl, $amount, $customerEmail, $currency, $paymentMethodTypes, $nofrixionOrderId, $createCardToken, $customerId);
 
         return $paymentRequest;
     }
