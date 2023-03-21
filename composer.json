@@ -6,6 +6,10 @@
         {
             "name": "Wouter Samaey",
             "email": "wouter.samaey@storefront.be"
+        },
+        {
+            "name": "James Bramich",
+            "email": "james@nofrixion.com"
         }
     ],
     "license": "MIT",
