@@ -90,7 +90,7 @@ class Data
         $createCardToken = true;
         $client = $this->getPaymentRequestClient($storeId);
         $originUrl = str_replace('http://', 'https://', $originUrl);
-        $paymentRequest = $client->createPaymentRequest($originUrl, $callbackUrl, $amount, $customerEmail, $currency, $paymentMethodTypes, $nofrixionOrderId, $createCardToken, $customerId);
+        $paymentRequest = $client->createPaymentRequest($originUrl, $callbackUrl, $amount, $customerEmail, $currency, "pisp", $nofrixionOrderId, $createCardToken, $customerId);
 
         return $paymentRequest;
     }
