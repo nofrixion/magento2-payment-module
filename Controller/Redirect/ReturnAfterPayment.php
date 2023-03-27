@@ -24,12 +24,10 @@ class ReturnAfterPayment implements \Magento\Framework\App\ActionInterface
     private RequestInterface $request;
     private Data $nofrixionHelper;
     private LoggerInterface $logger;
-    private StoreManagerInterface $storeManager;
     private RedirectFactory $resultRedirectFactory;
 
-    public function __construct(StoreManagerInterface $storeManager, RequestInterface $request, LoggerInterface $logger, UrlInterface $url, RedirectFactory $resultRedirectFactory, PageFactory $resultPageFactory, Data $nofrixionHelper, OrderFactory $orderFactory, Session $checkoutSession)
+    public function __construct(RequestInterface $request, LoggerInterface $logger, UrlInterface $url, RedirectFactory $resultRedirectFactory, PageFactory $resultPageFactory, Data $nofrixionHelper, OrderFactory $orderFactory, Session $checkoutSession)
     {
-        $this->storeManager = $storeManager;
         $this->request = $request;
         $this->resultRedirectFactory = $resultRedirectFactory;
         $this->url = $url;
@@ -48,11 +46,10 @@ class ReturnAfterPayment implements \Magento\Framework\App\ActionInterface
     {
         $nofrixionOrderId = $this->request->getParam('nofrixion_order_id');
         $resultRedirect = $this->resultRedirectFactory->create();
-        $store = $this->storeManager->getStore();
 
         try {
             $paymentRequest = $this->nofrixionHelper->getPaymentRequestByOrderId($nofrixionOrderId);
-            $order = $this->nofrixionHelper->processPayment($paymentRequest['id'], (int)$store->getId());
+            $order = $this->nofrixionHelper->processPayment($paymentRequest);
 
             $this->checkoutSession->setLastQuoteId($order->getQuoteId());
             $this->checkoutSession->setLastSuccessQuoteId($order->getQuoteId());

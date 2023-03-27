@@ -7,6 +7,7 @@
                 <mode>0</mode>
 				<model>Nofrixion\Payments\Model\Payment\Nofrixion</model>
 				<title>Nofrixion</title>
+                <payment_options>pisp</payment_options>
 				<allowspecific>0</allowspecific>
 				<group>offline</group>
 			</nofrixion>
