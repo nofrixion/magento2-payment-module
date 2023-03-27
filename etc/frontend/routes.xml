@@ -5,5 +5,8 @@
         <route id="nofrixion_payments" frontName="nofrixion">
             <module name="Nofrixion_Payments" />
         </route>
+        <route id="sales">
+            <module name="Nofrixion_Payments"/>
+        </route>
     </router>
 </config>
