@@ -15,7 +15,7 @@ It is recommended to use the `composer` PHP package manager for production magen
 - Apply database updates by running `php bin/magento setup:upgrade` (for production, also add the parameter `--keep-generated` or you will need to run `php bin/magento setup:di:compile` again.)
 - Flush the cache by running `php bin/magento cache:flush`
 
-Note, there are several third-party caching products that may be deployed in your Magento environment and prevent the payments module from appearing in the Magento adminstration interface. If the Nofrixion Payments module is not visible after following the above steps, most third party caches will be cleared by restarting the apache server.
+Note, there are several third-party caching products that may be deployed in your Magento environment and prevent the payments module from appearing in the Magento administration interface. If the Nofrixion Payments module is not visible after following the above steps, most third party caches will be cleared by restarting the apache server.
 
 ### Updates ###
 
@@ -29,7 +29,7 @@ If you have installed the payments module using the composer command specified a
 
 To remove the payment module:
 
-- Login to the Magento storefront adminstraiton panel and:
+- Login to the Magento storefront administration panel and:
   - Disable the module in the `Stores -> Configuration -> Sales -> Payment Methods` section.
   - Go to the cache management page and refresh any caches with a status of 'invalidated'.
 - Open a shell to your Magento server and:
