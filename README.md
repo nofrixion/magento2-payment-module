@@ -25,7 +25,7 @@ If you have installed the payments module using the composer command specified a
 - Apply database updates by running `php bin/magento setup:upgrade` (for production, also add the parameter `--keep-generated` or you will need to run `php bin/magento setup:di:compile` again.)
 - Flush the cache by running `php bin/magento cache:flush`
 
-### Payments module removal ###
+### Removal ###
 
 To remove the payment module:
 
