@@ -25,7 +25,10 @@ To update the payments module:
 
 ### Plugin removal ###
 
-The plugin can be removed by running `composer update nofrixion/magento2-payments-module`.
+To remove the payment module:
+
+- Log into the magento adminstraiton panel, and disable the plugin in the `Stores -> Configuration -> Sales -> Payment Methods` section.
+- Run `composer remove nofrixion/magento2-payments-module` from a shell session on your Magento host.
 
 ## Configuration ##
 
