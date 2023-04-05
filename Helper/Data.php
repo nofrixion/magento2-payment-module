@@ -198,7 +198,7 @@ class Data
 
     public function encodeOrderId(Order $order): string
     {
-        $r = $order->getIncrementId() . self::ORDER_ID_SEPARATOR . time();
+        $r = $order->getId() . self::ORDER_ID_SEPARATOR . time();
         return $r;
     }
 
