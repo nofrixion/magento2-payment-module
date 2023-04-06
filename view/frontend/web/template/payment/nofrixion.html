@@ -4,7 +4,9 @@
                name="payment[method]"
                class="radio"
                data-bind="attr: {'id': getCode()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()"/>
+               <img src="https://cdn.nofrixion.com/img/nofrixion-logo-mark-full-color-rgb.svg" alt="NoFrixion logo" width="40" height="40">
         <label data-bind="attr: {'for': getCode()}" class="label"><span data-bind="text: getTitle()"></span></label>
+        <span style="float:right; padding-right: 20%;"><a href="https://www.nofrixion.com" target="_blank">What is NoFrixion?</a></span>
     </div>
     <div class="payment-method-content">
         <!-- ko foreach: getRegion('messages') -->
@@ -35,5 +37,6 @@
                 </button>
             </div>
         </div>
+    
     </div>
 </div>
