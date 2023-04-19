@@ -2,8 +2,7 @@
     <div class="payment-method-title field choice">
         <input type="radio" name="payment[method]" class="radio"
             data-bind="attr: {'id': getCode()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()" />
-        <img src="https://cdn.nofrixion.com/img/nofrixion-logo-mark-full-color-rgb.svg" alt="NoFrixion logo" width="30"
-            height="30">
+
         <label data-bind="attr: {'for': getCode()}" class="label"><span data-bind="text: getTitle()"></span></label>
 
         <!-- BEGIN Nofrixion tooltip -->
@@ -16,7 +15,7 @@
                         card or other payment methods.</p>
                 </span>
                 <span style="display: inline-block;width: 50%;">
-                    <img data-bind="attr: {src: require.toUrl('Nofrixion_Payments/images/pay-by-bank.gif')}"
+                    <img src="https://cdn.nofrixion.com/img/paybybank.gif"
                         alt="Pay by bank animation.">
                     </img>
                 </span>
