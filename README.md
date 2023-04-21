@@ -2,6 +2,12 @@
 
 NoFrixion.com online payments for your Magento 2 store.
 
+## System Requirements ##
+
+The NoFrixion payments module is designed to be compatible Magento 2.4.4 onwards (note, support for the 2.4.0-2.4.3 release line [ended on November 28, 2022](https://experienceleague.adobe.com/docs/commerce-operations/release/versions.html?lang=en)).
+
+For the underlying Magento dependencies, please refer to the [Magento system requirements](https://experienceleague.adobe.com/docs/commerce-operations/installation-guide/system-requirements.html).
+
 ## Installation, Updates & Removal ##
 
 It is recommended to use the `composer` PHP package manager for production magento deployments. `composer` can be used to install, update and remove the NoFrixion magento 2 module.
