@@ -59,7 +59,7 @@ class SendMailOnOrderSuccess implements ObserverInterface
             // Only send order confirmation (here) for completed NoFrixion payments.
             if ($paymentMethodCode == 'nofrixion' && ($orderStatus === 'complete' || $orderStatus === 'nofrixion_paid_correctly')) {
                 //$this->logger->info(__METHOD__ . ' Order: '. $order->getIncrementId() . ' - ' . $order->getStatus());
-                $this->orderSender->send($order, true);
+                //$this->orderSender->send($order, true);
             }
         }
     }
