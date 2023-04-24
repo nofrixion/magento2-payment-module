@@ -26,6 +26,8 @@ class OrderSenderPlugin
         $orderStatus = $order->getStatus();
         $paymentMethodCode = $order->getPayment()->getMethod();
 
+        $this->logger->info(__METHOD__ . ' Order: '. $order->getIncrementId() . ' - ' . $order->getStatus());
+        
         // Proceed as normal for non-NoFrixion payment, or if payment status matches completed NoFrixion status.
         if ($paymentMethodCode != 'nofrixion' || $orderStatus === 'complete' || $orderStatus === 'nofrixion_paid_correctly') {
             $returnValue = $proceed($order, $forceSyncMode);
