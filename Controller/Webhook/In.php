@@ -40,8 +40,8 @@ class In implements ActionInterface
         if ($paymentRequestId) {
             $paymentRequest = $this->nofrixionHelper->getPaymentRequest($paymentRequestId, $storeId);
             $order = $this->nofrixionHelper->processPayment($paymentRequest);
-            
-            // Send order confirmation email
+
+            // Send order confirmation email on success.
             $this->orderSender->send($order, true);
 
             return $resultJson->setData(['order_id' => (int)$order->getId(), 'order_increment_id' => $order->getIncrementId(), 'order_state' => $order->getState(), 'order_status' => $order->getStatus()]);
