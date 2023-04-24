@@ -10,23 +10,25 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
 use Magento\Store\Model\StoreManagerInterface;
 use Nofrixion\Payments\Helper\Data as NoFrixionHelper;
+use Psr\Log\LoggerInterface;
 
 class In implements ActionInterface
 {
-
+    private LoggerInterface $logger;
     private NoFrixionHelper $nofrixionHelper;
     private OrderSender $orderSender;
     private RequestInterface $request;
     private StoreManagerInterface $storeManager;
     private JsonFactory $resultJsonFactory;
 
-    public function __construct(RequestInterface $request, NoFrixionHelper $helper, OrderSender $orderSender, StoreManagerInterface $storeManager, JsonFactory $resultJsonFactory)
+    public function __construct(RequestInterface $request, NoFrixionHelper $helper, OrderSender $orderSender, StoreManagerInterface $storeManager, JsonFactory $resultJsonFactory, LoggerInterface $logger)
     {
         $this->request = $request;
         $this->nofrixionHelper = $helper;
         $this->orderSender = $orderSender;
         $this->storeManager = $storeManager;
         $this->resultJsonFactory = $resultJsonFactory;
+        $this->logger = $logger;
     }
 
     public function execute()
@@ -38,6 +40,8 @@ class In implements ActionInterface
         if ($paymentRequestId) {
             $paymentRequest = $this->nofrixionHelper->getPaymentRequest($paymentRequestId, $storeId);
             $order = $this->nofrixionHelper->processPayment($paymentRequest);
+
+            $this->logger->info(__METHOD__ . ' Order: '. $order->getIncrementId() . ' - ' . $order->getStatus());
             $this->orderSender->send($order, true);
 
             return $resultJson->setData(['order_id' => (int)$order->getId(), 'order_increment_id' => $order->getIncrementId(), 'order_state' => $order->getState(), 'order_status' => $order->getStatus()]);
