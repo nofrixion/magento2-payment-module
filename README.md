@@ -14,22 +14,32 @@ It is recommended to use the `composer` PHP package manager for production magen
 
 ### Installation ###
 
-- Install the files:
-  - Using composer (recommended). Run `composer require nofrixion/magento2-payments-module`
-  - Using a ZIP file (not recommended). Unzip the ZIP file in `app/code/Nofrixion/Payments`
-- Enable the module by running `php bin/magento module:enable Nofrixion_Payments`
-- Apply database updates by running `php bin/magento setup:upgrade` (for production, also add the parameter `--keep-generated` or you will need to run `php bin/magento setup:di:compile` again.)
-- Flush the cache by running `php bin/magento cache:flush`
+- Install the NoFrixion payments module using composer by running the following commands:
+
+```bash
+composer require nofrixion/magento2-payments-module
+php bin/magento module:enable Nofrixion_Payments
+php bin/magento setup:upgrade
+php bin/magento setup:di:compile
+php bin/magento cache:flush
+```
+
+\* it is also possible to install the module by downloading the ZIP file from github and extracting it to `{magento-install-directory/app/code/Nofrixion/Payments`. Then run the last four commands in the sequence above to enable the plugin. This method is NOT recommended for production environments.
 
 Note, there are several third-party caching products that may be deployed in your Magento environment and prevent the payments module from appearing in the Magento administration interface. If the Nofrixion Payments module is not visible after following the above steps, most third party caches will be cleared by restarting the apache server.
 
 ### Updates ###
 
-If you have installed the payments module using the composer command specified above, you can update the plugin using composer. The following procedure will update the payments plugin to the most recent stable version:
+If you have installed the payments module using the composer command specified above, you can update the plugin using composer. From a shell session on your magento server, run:
 
-- From a shell session on your magento server, run `composer update nofrixion/magento2-payments-module`.
-- Apply database updates by running `php bin/magento setup:upgrade` (for production, also add the parameter `--keep-generated` or you will need to run `php bin/magento setup:di:compile` again.)
-- Flush the cache by running `php bin/magento cache:flush`
+```bash
+composer update nofrixion/magento2-payments-module
+php bin/magento setup:upgrade
+php bin/magento setup:di:compile
+php bin/magento cache:flush
+```
+
+If you are updating a production environment, we recommend [placing the store in maintenance mode](https://experienceleague.adobe.com/docs/commerce-operations/installation-guide/tutorials/maintenance-mode.html) first.
 
 ### Removal ###
 
