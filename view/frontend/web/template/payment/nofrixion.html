@@ -6,15 +6,15 @@
         <label data-bind="attr: {'for': getCode()}" class="label"><span data-bind="text: getTitle()"></span></label>
 
         <!-- BEGIN Nofrixion tooltip -->
-
-        <span class="nofrixion-tooltip" style="padding-left: 20%;">
+        <span id="spacer"></span>
+        <span class="nofrixion-tooltip">
             <a href="#" class="tooltip-toggle" data-bind="text: 'What is ' + getTitle() + '?'"></a>
             <span class="tooltip-content">
-                <span style="display: inline-block; vertical-align: top; padding: 1em; width: 40%;">
+                <span style="display: inline-block; vertical-align: top; padding: 1em">
                     <p>Pay by bank allows you to make a payment directly from your bank account without using a credit
                         card or other payment methods.</p>
                 </span>
-                <span style="display: inline-block;width: 50%;">
+                <span style="display: inline-block">
                     <img src="https://cdn.nofrixion.com/img/paybybank.gif"
                         alt="Pay by bank animation.">
                     </img>
