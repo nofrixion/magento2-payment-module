@@ -62,6 +62,18 @@ Please find all configuration opens in Magento Admin > Stores > Configuration > 
 - Set the mode to production or sandbox
 - Change the other settings to your liking
 
+## Known Issues ##
+
+There is a known issue where PayPal buttons render over the tooltip. This has not been directly fixed in the plugin as it would would involve applying styles to another vendor's module. Affected merchants can resolve this issue by applying the following style to the header section of the Magento storefront theme via `Content -> Design -> Configuration`.
+
+```css
+<style>
+iframe {
+    z-index: 1 !important;
+}
+</style>
+```
+
 ## Troubleshooting ##
 
 If something goes wrong during installation or during deployment, just follow the typical Magento 2 module installation steps. The NoFrixion Payments module follows all Magento 2 standards and should not be any different.
