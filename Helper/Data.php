@@ -69,7 +69,12 @@ class Data
 
     public function isProductionMode(?int $storeId = null): bool
     {
-        return $this->scopeConfig->isSetFlag('payment/nofrixion/is_production', ScopeInterface::SCOPE_STORE, $storeId);
+        $paymentMode = $this->scopeConfig->getValue('payment/nofrixion/mode', ScopeInterface::SCOPE_STORE, $storeId);
+        if ($paymentMode === '1') {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function getApiBaseUrl(): string
@@ -84,7 +89,7 @@ class Data
 
     public function createPaymentRequest(Order $order): array
     {
-        $storeId = (int)$order->getStoreId();
+        $storeId = (int) $order->getStoreId();
         $amount = $order->getTotalDue();
         $customerEmail = $order->getCustomerEmail();
         $currency = $order->getOrderCurrencyCode();
@@ -93,9 +98,9 @@ class Data
         $originUrl = $this->url->getBaseUrl(['_store' => $storeId]);
         $nofrixionOrderId = $this->encodeOrderId($order);
         $callbackUrl = $this->url->getUrl('nofrixion/redirect/returnAfterPayment', ['_store' => $storeId, '_secure' => true, 'nofrixion_order_id' => $nofrixionOrderId]);
-        $amount = PreciseNumber::parseString((string)$amount);
+        $amount = PreciseNumber::parseString((string) $amount);
         if ($order->getCustomerId()) {
-            $customerId = (string)$order->getCustomerId();
+            $customerId = (string) $order->getCustomerId();
         } else {
             $customerId = null;
         }
@@ -157,7 +162,7 @@ class Data
 
         if ($isPaid && $newStatus && $order->getTotalDue() > 0) {
 
-            if($newStatus !== $order->getStatus()) {
+            if ($newStatus !== $order->getStatus()) {
                 if ($createInvoice) {
                     $msg = 'Customer paid ' . $paymentRequest['amount'] . ' ' . $paymentRequest['currency'] . ' using the NoFrixion payment request with ID ' . $paymentRequest['id'];
                 } else {
@@ -216,11 +221,11 @@ class Data
             $paymentRequestId = $invoice->getTransactionId();
 
             $order = $payment->getOrder();
-            $storeId = (int)$order->getStoreId();
+            $storeId = (int) $order->getStoreId();
 
             $client = $this->getPaymentRequestClient($storeId);
             // Magento stores decimals with 4 places, so we do the same
-            if ($amount === null || round((float)$amount, 4) === round((float)$creditmemo->getGrandTotal(), 4)) {
+            if ($amount === null || round((float) $amount, 4) === round((float) $creditmemo->getGrandTotal(), 4)) {
                 $client->voidAllPaymentsForPaymentRequest($paymentRequestId);
             } else {
                 throw new \RuntimeException('Cannot void the payment request with ID ' . $paymentRequestId . ' because only full refunds are supported and not partial ones.');
