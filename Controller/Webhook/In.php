@@ -38,14 +38,19 @@ class In implements ActionInterface
         $resultJson = $this->resultJsonFactory->create();
 
         if ($paymentRequestId) {
+
+            $this->logger->info('Nofrixion_Payments: success callback for payment request ' . $paymentRequestId);
+
             $paymentRequest = $this->nofrixionHelper->getPaymentRequest($paymentRequestId, $storeId);
             $order = $this->nofrixionHelper->processPayment($paymentRequest);
 
             // Send order confirmation email on success.
+            $this->logger->info('Nofrixion_Payments: Sending order email for order #: ' . $order->getIncrementId());
             $this->orderSender->send($order, true);
 
             return $resultJson->setData(['order_id' => (int)$order->getId(), 'order_increment_id' => $order->getIncrementId(), 'order_state' => $order->getState(), 'order_status' => $order->getStatus()]);
         } else {
+            $this->logger->error('Nofrixion_Payments: received success callback with missing payment request Id.');
             $resultJson->setStatusHeader(400);
             return $resultJson->setData(['error_msg' => 'Missing querystring parameter "id"']);
         }

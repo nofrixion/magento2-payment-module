@@ -14,7 +14,7 @@ It is recommended to use the `composer` PHP package manager for production magen
 
 ### Installation ###
 
-- Install the NoFrixion payments module using composer by running the following commands:
+Install the NoFrixion payments module using composer by running the following commands:
 
 ```bash
 composer require nofrixion/magento2-payments-module
