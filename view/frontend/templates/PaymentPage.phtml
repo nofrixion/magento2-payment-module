@@ -1,0 +1,18 @@
+<?php
+/** @var \Nofrixion\Payments\Block\SubmitPayment $block */
+?>
+
+
+<div id="nf-payelement" style="border: none; width: 350px; height: 800px;"></div>
+    
+    <script>
+      window.onload = function() {
+        var paymentRequestID = 'c95fa4df-bc2e-45e8-c611-08d9fccc58a3';
+        var nfPayElement = new NoFrixionPayElement('<?php echo $block->getPaymentRequestId() ?>', 'nf-payelement', 'https://api-sandbox.nofrixion.com');
+        nfPayElement.load();
+      }
+    </script>
+
+<br/>
+paymentrequestid: <?php echo $block->getPaymentRequestId() ?> <br/>
+apiurl: <?php echo $block->getApiUrl() ?>

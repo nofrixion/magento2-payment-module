@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Nofrixion\Payments\Controller\Redirect;
+namespace Nofrixion\Payments\Controller\Payment;
 
 use Magento\Checkout\Model\Session;
 use Magento\Customer\Model\Session as CustomerSession;
@@ -10,29 +10,40 @@ use Magento\Framework\Controller\Result\RedirectFactory;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
 use Magento\Framework\Stdlib\CookieManagerInterface;
+use Magento\Framework\View\Result\PageFactory;
 use Nofrixion\Payments\Helper\Data as NoFrixionHelper;
 use Nofrixion\Payments\Model\OrderStatuses;
 
-class ForwardToPayment implements \Magento\Framework\App\ActionInterface
+class Submit implements \Magento\Framework\App\ActionInterface
 {
 
     private NoFrixionHelper $nofrixionHelper;
     private CustomerSession $customerSession;
     private CookieManagerInterface $cookieManager;
     private CookieMetadataFactory $cookieMetadataFactory;
+    private PageFactory $resultPageFactory;
     private SessionManagerInterface $sessionManager;
     private Session $checkoutSession;
     private RedirectFactory $resultRedirectfactory;
 
-    public function __construct(RedirectFactory $resultRedirectFactory, Session $checkoutSession, CookieManagerInterface $cookieManager, CookieMetadataFactory $cookieMetadataFactory, SessionManagerInterface $sessionManager, NoFrixionHelper $helper, CustomerSession $customerSession)
-    {
+    public function __construct(
+        CookieManagerInterface $cookieManager,
+        CookieMetadataFactory $cookieMetadataFactory,
+        CustomerSession $customerSession,
+        NoFrixionHelper $helper,
+        PageFactory $resultPageFactory,
+        RedirectFactory $resultRedirectFactory,
+        Session $checkoutSession,
+        SessionManagerInterface $sessionManager
+    ) {
+        $this->cookieManager = $cookieManager;
+        $this->cookieMetadataFactory = $cookieMetadataFactory;
+        $this->customerSession = $customerSession;
+        $this->nofrixionHelper = $helper;
+        $this->resultPageFactory = $resultPageFactory;
         $this->resultRedirectfactory = $resultRedirectFactory;
         $this->checkoutSession = $checkoutSession;
-        $this->cookieMetadataFactory = $cookieMetadataFactory;
-        $this->cookieManager = $cookieManager;
         $this->sessionManager = $sessionManager;
-        $this->nofrixionHelper = $helper;
-        $this->customerSession = $customerSession;
     }
 
     private function setCookie($name, $value, $duration)
@@ -48,11 +59,9 @@ class ForwardToPayment implements \Magento\Framework\App\ActionInterface
     public function execute()
     {
         $order = $this->checkoutSession->getLastRealOrder();
-        $resultRedirect = $this->resultRedirectfactory->create();
 
         if ($order && $order->getId()) {
             $paymentRequest = $this->nofrixionHelper->createPaymentRequest($order);
-            $url = $paymentRequest['hostedPayCheckoutUrl'];
 
             $pendingPaymentStatus = OrderStatuses::STATUS_CODE_PENDING_PAYMENT;
             $order->addCommentToStatusHistory('Forwarding customer to the hosted payment page', $pendingPaymentStatus);
@@ -65,13 +74,17 @@ class ForwardToPayment implements \Magento\Framework\App\ActionInterface
                 $this->setCookie('oar_billing_lastname', $order->getBillingAddress()->getLastName(), $duration);
                 $this->setCookie('oar_email', $order->getCustomerEmail(), $duration);
             }
-
-            $resultRedirect->setUrl($url);
+            // Send payment request and order details to SubmitPayment block and return the payments page
+            $resultPage = $this->resultPageFactory->create();
+            $resultPage->getLayout()->getBlock('submit_payment')->setData('paymentRequest', $paymentRequest);
+            $resultPage->getLayout()->getBlock('submit_payment')->setData('order', $order);
+            return $resultPage;
         } else {
             // Send back to the cart page
+            $resultRedirect = $this->resultRedirectfactory->create();
             $resultRedirect->setUrl($order->getStore()->getUrl('checkout/cart'));
+            return $resultRedirect;
         }
-        return $resultRedirect;
     }
 
 

@@ -85,6 +85,11 @@ class Data
             return 'https://api-sandbox.nofrixion.com';
         }
     }
+    public function getApiUrl(?int $storeId = null): string
+    {
+		$client = $this->getPaymentRequestClient($storeId);
+		return $client->getApiUrl();
+    }
 
 
     public function createPaymentRequest(Order $order): array
