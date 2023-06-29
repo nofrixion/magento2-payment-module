@@ -6,7 +6,6 @@
                 <argument name="text" xsi:type="string">
                     <![CDATA[
                         <script src="https://cdn.nofrixion.com/nofrixion-nextgen.js"></script>
-                        <script src="https://api-sandbox.nofrixion.com/js/payelement.js"></script>
                     ]]>
                 </argument>
             </arguments>
