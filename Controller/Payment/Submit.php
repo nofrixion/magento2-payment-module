@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Nofrixion\Payments\Controller\Payment;
+namespace NoFrixion\Payments\Controller\Payment;
 
 use Magento\Checkout\Model\Session;
 use Magento\Customer\Model\Session as CustomerSession;
@@ -11,8 +11,8 @@ use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
 use Magento\Framework\Stdlib\CookieManagerInterface;
 use Magento\Framework\View\Result\PageFactory;
-use Nofrixion\Payments\Helper\Data as NoFrixionHelper;
-use Nofrixion\Payments\Model\OrderStatuses;
+use NoFrixion\Payments\Helper\Data as NoFrixionHelper;
+use NoFrixion\Payments\Model\OrderStatuses;
 
 class Submit implements \Magento\Framework\App\ActionInterface
 {

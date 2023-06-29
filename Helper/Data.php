@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Nofrixion\Payments\Helper;
+namespace NoFrixion\Payments\Helper;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\DB\TransactionFactory;
@@ -18,7 +18,9 @@ use Magento\Sales\Model\ResourceModel\Order\Status as StatusResource;
 use Magento\Sales\Model\ResourceModel\Order\StatusFactory as StatusResourceFactory;
 use Magento\Store\Model\ScopeInterface;
 use NoFrixion\Client\PaymentRequest;
-use Nofrixion\Payments\Model\OrderStatuses;
+use NoFrixion\Client\MerchantClient;
+use NoFrixion\Model\Merchant\MerchantPayByBankSettings;
+use NoFrixion\Payments\Model\OrderStatuses;
 use NoFrixion\Util\PreciseNumber;
 use Psr\Log\LoggerInterface;
 
@@ -55,18 +57,6 @@ class Data
         $this->statusCollectionFactory = $statusCollectionFactory;
     }
 
-    public function getPaymentRequestClient(?int $storeId = null): PaymentRequest
-    {
-        if ($this->isProductionMode($storeId)) {
-            $apiToken = $this->scopeConfig->getValue('payment/nofrixion/api_token_production', ScopeInterface::SCOPE_STORE, $storeId);
-        } else {
-            $apiToken = $this->scopeConfig->getValue('payment/nofrixion/api_token_sandbox', ScopeInterface::SCOPE_STORE, $storeId);
-        }
-        $baseUrl = $this->getApiBaseUrl();
-        $client = new PaymentRequest($baseUrl, $apiToken);
-        return $client;
-    }
-
     public function isProductionMode(?int $storeId = null): bool
     {
         $paymentMode = $this->scopeConfig->getValue('payment/nofrixion/mode', ScopeInterface::SCOPE_STORE, $storeId);
@@ -84,6 +74,39 @@ class Data
         } else {
             return 'https://api-sandbox.nofrixion.com';
         }
+    }
+
+    public function getApiToken(?int $storeId = null): string
+    {
+        if ($this->isProductionMode($storeId)) {
+            $apiToken = $this->scopeConfig->getValue('payment/nofrixion/api_token_production', ScopeInterface::SCOPE_STORE, $storeId);
+        } else {
+            $apiToken = $this->scopeConfig->getValue('payment/nofrixion/api_token_sandbox', ScopeInterface::SCOPE_STORE, $storeId);
+        }
+        return $apiToken;
+    }
+    
+    public function getMerchantClient(?int $storeId = null): MerchantClient
+    {
+        $apiToken = $this->getApiToken($storeId);
+        $baseUrl = $this->getApiBaseUrl();
+        $client = new MerchantClient($baseUrl, $apiToken);
+        return $client;
+    }
+    public function getMerchantPayByBankSettings(Order $order): MerchantPayByBankSettings
+    {
+        $storeId = (int) $order->getStoreId();
+        $client = $this->getMerchantClient($storeId);
+        $merchantId = $client->whoAmIMerchant()->id;
+        return $client->getMerchantPayByBankSettings($merchantId);
+    }
+    
+    public function getPaymentRequestClient(?int $storeId = null): PaymentRequest
+    {
+        $apiToken = $this->getApiToken($storeId);
+        $baseUrl = $this->getApiBaseUrl();
+        $client = new PaymentRequest($baseUrl, $apiToken);
+        return $client;
     }
 
     public function createPaymentRequest(Order $order): array
@@ -190,8 +213,6 @@ class Data
             $saveTransaction->addObject($order);
             $saveTransaction->save();
         }
-
-
         return $order;
     }
 

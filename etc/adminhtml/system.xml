@@ -10,7 +10,7 @@
 				</field>
                 <field id="mode" type="select" sortOrder="15" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                     <label>Mode</label>
-                    <source_model>Nofrixion\Payments\Model\Config\Source\Mode</source_model>
+                    <source_model>NoFrixion\Payments\Model\Config\Source\Mode</source_model>
                 </field>
 				<field id="title" type="text" sortOrder="20" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
 					<label>Title</label>
@@ -23,7 +23,7 @@
                 </field>
                 <field id="payment_options" type="select" sortOrder="30" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                     <label>Payment Options</label>
-                    <source_model>Nofrixion\Payments\Model\Config\Source\PaymentOptions</source_model>
+                    <source_model>NoFrixion\Payments\Model\Config\Source\PaymentOptions</source_model>
                 </field>
 				<field id="allowspecific" type="allowspecific" sortOrder="40" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
 					<label>Payment from Applicable Countries</label>

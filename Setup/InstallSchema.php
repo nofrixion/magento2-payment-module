@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Nofrixion\Payments\Setup;
+namespace NoFrixion\Payments\Setup;
 
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Sales\Model\Order;
-use Nofrixion\Payments\Helper\Data as NofrixionHelper;
-use Nofrixion\Payments\Model\OrderStatuses;
+use NoFrixion\Payments\Helper\Data as NoFrixionHelper;
+use NoFrixion\Payments\Model\OrderStatuses;
 
 class InstallSchema implements InstallSchemaInterface
 {
-    private NofrixionHelper $helper;
+    private NoFrixionHelper $helper;
 
-    public function __construct(NofrixionHelper $nofrixionHelper)
+    public function __construct(NoFrixionHelper $nofrixionHelper)
     {
         $this->helper = $nofrixionHelper;
     }

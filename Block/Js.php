@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Nofrixion\Payments\Block;
+namespace NoFrixion\Payments\Block;
 
 use Magento\Framework\View\Element\AbstractBlock;
 
 class Js extends AbstractBlock
 {
 
-    private \Nofrixion\Payments\Helper\Data $helper;
+    private \NoFrixion\Payments\Helper\Data $helper;
 
-    public function __construct(\Magento\Framework\View\Element\Context $context, \Nofrixion\Payments\Helper\Data $helper, array $data = [])
+    public function __construct(\Magento\Framework\View\Element\Context $context, \NoFrixion\Payments\Helper\Data $helper, array $data = [])
     {
         parent::__construct($context, $data);
         $this->helper = $helper;

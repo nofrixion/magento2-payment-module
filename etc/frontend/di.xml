@@ -4,7 +4,7 @@
     <type name="Magento\Checkout\Model\CompositeConfigProvider">
         <arguments>
             <argument name="configProviders" xsi:type="array">
-                <item name="nofrixion_payments_config_provider" xsi:type="object">Nofrixion\Payments\Model\Ui\ConfigProvider</item>
+                <item name="nofrixion_payments_config_provider" xsi:type="object">NoFrixion\Payments\Model\Ui\ConfigProvider</item>
             </argument>
         </arguments>
     </type>

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Nofrixion\Payments\Controller\Webhook;
+namespace NoFrixion\Payments\Controller\Webhook;
 
 use Magento\Framework\App\ActionInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
 use Magento\Store\Model\StoreManagerInterface;
-use Nofrixion\Payments\Helper\Data as NoFrixionHelper;
+use NoFrixion\Payments\Helper\Data as NoFrixionHelper;
 use Psr\Log\LoggerInterface;
 
 class In implements ActionInterface

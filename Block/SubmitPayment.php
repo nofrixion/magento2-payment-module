@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Nofrixion\Payments\Block;
+namespace NoFrixion\Payments\Block;
 
-use Nofrixion\Payments\Helper\Data as NoFrixionHelper;
+use NoFrixion\Model\Merchant\MerchantPayByBankSettings;
+use NoFrixion\Payments\Helper\Data as NoFrixionHelper;
 
 class SubmitPayment extends \Magento\Framework\View\Element\Template
 {
@@ -19,7 +20,7 @@ class SubmitPayment extends \Magento\Framework\View\Element\Template
 
 	public function getApiUrl()
 	{
-		// create Nofrixion\Client\PaymentRequest and use inherited getApiUrl() method.
+		// create NoFrixion\Client\PaymentRequest and use inherited getApiUrl() method.
 		// $storeId = (int) $this->getData('order')->getStoreId();
 		// return $this->helper->getApiUrl($storeId);
 		return $this->helper->getApiBaseUrl() . '/api/v1';
@@ -28,5 +29,11 @@ class SubmitPayment extends \Magento\Framework\View\Element\Template
 	public function getPaymentRequestId()
 	{
 		return $this->getData('paymentRequest')['id'];
+	}
+
+	public function getPispProviders(): MerchantPayByBankSettings
+	{
+		$order = $this->getData('order');
+		return $this->helper->getMerchantPayByBankSettings($order);
 	}
 }

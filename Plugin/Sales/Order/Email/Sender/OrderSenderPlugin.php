@@ -1,6 +1,6 @@
 <?php
 
-namespace Nofrixion\Payments\Plugin\Sales\Order\Email\Sender;
+namespace NoFrixion\Payments\Plugin\Sales\Order\Email\Sender;
 
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
 use Magento\Sales\Model\Order;
