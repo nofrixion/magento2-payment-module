@@ -1,18 +1,18 @@
 <?php
 
-namespace NoFrixion\Payments\Setup;
+namespace Nofrixion\Payments\Setup;
 
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Setup\UpgradeSchemaInterface;
 use Magento\Sales\Model\Order;
-use NoFrixion\Payments\Model\OrderStatuses;
+use Nofrixion\Payments\Model\OrderStatuses;
 
 class UpgradeSchema implements UpgradeSchemaInterface
 {
-    private \NoFrixion\Payments\Helper\Data $helper;
+    private \Nofrixion\Payments\Helper\Data $helper;
 
-    public function __construct(\NoFrixion\Payments\Helper\Data $nofrixionHelper)
+    public function __construct(\Nofrixion\Payments\Helper\Data $nofrixionHelper)
     {
         $this->helper = $nofrixionHelper;
     }

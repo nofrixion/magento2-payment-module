@@ -12,6 +12,6 @@
         </block>
     </referenceBlock>
     <referenceContainer name="content">
-        <block class="NoFrixion\Payments\Block\SubmitPayment" name="submit_payment" template="Nofrixion_Payments::PaymentPage.phtml" />
+        <block class="Nofrixion\Payments\Block\SubmitPayment" name="submit_payment" template="Nofrixion_Payments::PaymentPage.phtml" />
     </referenceContainer>
 </page>

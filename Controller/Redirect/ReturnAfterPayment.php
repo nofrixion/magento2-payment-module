@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NoFrixion\Payments\Controller\Redirect;
+namespace Nofrixion\Payments\Controller\Redirect;
 
 use Magento\Checkout\Model\Session;
 use Magento\Framework\App\RequestInterface;
@@ -13,7 +13,7 @@ use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Sales\Model\OrderFactory;
 use Magento\Store\Model\StoreManagerInterface;
-use NoFrixion\Payments\Helper\Data;
+use Nofrixion\Payments\Helper\Data;
 use Psr\Log\LoggerInterface;
 
 class ReturnAfterPayment implements \Magento\Framework\App\ActionInterface

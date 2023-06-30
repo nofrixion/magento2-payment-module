@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NoFrixion\Payments\Model;
+namespace Nofrixion\Payments\Model;
 
 class OrderStatuses extends \Magento\Framework\Model\AbstractModel
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NoFrixion\Payments\Helper;
+namespace Nofrixion\Payments\Helper;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\DB\TransactionFactory;
@@ -17,11 +17,11 @@ use Magento\Sales\Model\OrderRepository;
 use Magento\Sales\Model\ResourceModel\Order\Status as StatusResource;
 use Magento\Sales\Model\ResourceModel\Order\StatusFactory as StatusResourceFactory;
 use Magento\Store\Model\ScopeInterface;
-use NoFrixion\Client\PaymentRequest;
-use NoFrixion\Client\MerchantClient;
-use NoFrixion\Model\Merchant\MerchantPayByBankSettings;
-use NoFrixion\Payments\Model\OrderStatuses;
-use NoFrixion\Util\PreciseNumber;
+use Nofrixion\Client\PaymentRequest;
+use Nofrixion\Client\MerchantClient;
+use Nofrixion\Model\Merchant\MerchantPayByBankSettings;
+use Nofrixion\Payments\Model\OrderStatuses;
+use Nofrixion\Util\PreciseNumber;
 use Psr\Log\LoggerInterface;
 
 class Data

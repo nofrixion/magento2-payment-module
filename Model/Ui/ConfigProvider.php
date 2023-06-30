@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace NoFrixion\Payments\Model\Ui;
+namespace Nofrixion\Payments\Model\Ui;
 
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Framework\UrlInterface;
-use NoFrixion\Payments\Model\Payment\Nofrixion;
+use Nofrixion\Payments\Model\Payment\Nofrixion;
 
 class ConfigProvider implements ConfigProviderInterface
 {

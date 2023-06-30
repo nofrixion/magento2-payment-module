@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace NoFrixion\Payments\Model\Payment;
+namespace Nofrixion\Payments\Model\Payment;
 
 use Magento\Directory\Helper\Data as DirectoryHelper;
 use Magento\Payment\Model\InfoInterface;
-use NoFrixion\Payments\Helper\Data as NoFrixionHelper;
+use Nofrixion\Payments\Helper\Data as NofrixionHelper;
 use \Magento\Payment\Model\Method\Logger;
 
 class Nofrixion extends \Magento\Payment\Model\Method\AbstractMethod

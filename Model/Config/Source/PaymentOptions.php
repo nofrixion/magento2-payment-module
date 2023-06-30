@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NoFrixion\Payments\Model\Config\Source;
+namespace Nofrixion\Payments\Model\Config\Source;
 
 class PaymentOptions implements \Magento\Framework\Data\OptionSourceInterface
 {

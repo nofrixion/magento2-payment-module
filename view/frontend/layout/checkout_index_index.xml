@@ -42,7 +42,7 @@
 
 		</referenceBlock>
         <referenceContainer name="content">
-            <block class="NoFrixion\Payments\Block\Js" name="nofrixion.js" />
+            <block class="Nofrixion\Payments\Block\Js" name="nofrixion.js" />
         </referenceContainer>
 	</body>
 </page>

@@ -1,6 +1,6 @@
 <?php
 
-namespace NoFrixion\Payments\Plugin\Sales\Order\Email\Sender;
+namespace Nofrixion\Payments\Plugin\Sales\Order\Email\Sender;
 
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
 use Magento\Sales\Model\Order;
@@ -26,7 +26,7 @@ class OrderSenderPlugin
         $orderStatus = $order->getStatus();
         $paymentMethodCode = $order->getPayment()->getMethod();
         
-        // Proceed as normal for non-NoFrixion payment, or if payment status matches completed NoFrixion status.
+        // Proceed as normal for non-Nofrixion payment, or if payment status matches completed Nofrixion status.
         if ($paymentMethodCode != 'nofrixion' || $orderStatus === 'complete' || $orderStatus === 'nofrixion_paid_correctly') {
             $returnValue = $proceed($order, $forceSyncMode);
         }
