@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Nofrixion_Payments::css/nofrixion-styles.css" />
+    </head>
     <referenceBlock name="head.additional">
         <block class="Magento\Framework\View\Element\Text" name="nofrixion.payelement.script">
             <arguments>
@@ -12,6 +15,7 @@
         </block>
     </referenceBlock>
     <referenceContainer name="content">
-        <block class="Nofrixion\Payments\Block\SubmitPayment" name="submit_payment" template="Nofrixion_Payments::PaymentPage.phtml" />
+        <block class="Nofrixion\Payments\Block\SubmitPayment" name="submit_payment"
+            template="Nofrixion_Payments::PaymentPage.phtml" />
     </referenceContainer>
 </page>

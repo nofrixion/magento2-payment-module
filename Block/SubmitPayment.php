@@ -31,9 +31,13 @@ class SubmitPayment extends \Magento\Framework\View\Element\Template
 		return $this->getData('paymentRequest')['id'];
 	}
 
-	public function getPispProviders(): MerchantPayByBankSettings
+	public function getPaymentMethodTypes()
+	{
+		return $this->getData('paymentRequest')['paymentMethodTypes'];
+	}
+	public function getPispProviders(): array
 	{
 		$order = $this->getData('order');
-		return $this->helper->getMerchantPayByBankSettings($order);
+		return $this->helper->getPayByBankSettings($order);
 	}
 }

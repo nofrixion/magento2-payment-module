@@ -93,7 +93,7 @@ class Data
         $client = new MerchantClient($baseUrl, $apiToken);
         return $client;
     }
-    public function getMerchantPayByBankSettings(Order $order): MerchantPayByBankSettings
+    public function getPayByBankSettings(Order $order): array
     {
         $storeId = (int) $order->getStoreId();
         $client = $this->getMerchantClient($storeId);

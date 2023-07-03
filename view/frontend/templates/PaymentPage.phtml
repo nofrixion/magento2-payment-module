@@ -1,23 +1,29 @@
 <?php
 /** @var \Nofrixion\Payments\Block\SubmitPayment $block */
+
+$paymentRequestId = $block->getPaymentRequestId();
+$apiUrl = $block->getApiUrl();
 ?>
+<p class="nofrixionPrompt">To pay using your bank account, choose your bank:</p>
+<div>
+    <?php
+    // display if pisp is a payment method type.
+    $pispProviders = $block->getPispProviders();
+    //var_dump($pispProviders)
+    foreach ($pispProviders as $provider) {
+        include $block->getTemplateFile('Nofrixion_Payments::PayByBank.phtml');
+    }
+    ?>
 
-<!-- Embed Nofrixion Pay Element Web Component 
-<nofrixion-pay-element 
-    paymentrequestid="<?php //echo $block->getPaymentRequestId() ?>"
-    apiurl="<?php //echo $block->getApiUrl() ?>"
-    >
-</nofrixion-pay-element>
--->
+    <div id="pay-by-bank-error"></div>
 
-<br/>
-paymentrequestid: <?php echo $block->getPaymentRequestId() ?> <br/>
-apiurl: <?php echo $block->getApiUrl() ?>
-<br/>
+    <div class="hidden">
+        paymentrequestid:
+        <?php echo $paymentRequestId ?> <br />
+        apiurl:
+        <?php echo $apiUrl ?>
+    </div>
+</div>
+<style>
 
-<?php
-$pispProviders = $block->getPispProviders();
-foreach ($pispProviders as $provider){
-    echo ($provider->bankName . ' -- ' . $provider->logo . PHP_EOL);
-}
-?>
+</style>
