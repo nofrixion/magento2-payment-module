@@ -1,29 +1,41 @@
 <?php
 /** @var \Nofrixion\Payments\Block\SubmitPayment $block */
 
+//xdebug_break();
+
 $paymentRequestId = $block->getPaymentRequestId();
 $apiUrl = $block->getApiUrl();
-?>
-<p class="nofrixionPrompt">To pay using your bank account, choose your bank:</p>
-<div>
-    <?php
-    // display if pisp is a payment method type.
+$paymentMethods = explode(',', $block->getPaymentMethodTypes());
+$paymentMethods = array_map('trim', $paymentMethods);
+
+
+// Present PayByBank options if 'pisp' is a payment method type.
+if (in_array('pisp', $paymentMethods)) {
+    echo '<h2 class="sectionHeader">Pay by Bank</h2>';
+    echo '<p class="nfPrompt">To pay using your bank account, choose your bank:</p>';
+    echo '<div>';
     $pispProviders = $block->getPispProviders();
     //var_dump($pispProviders)
     foreach ($pispProviders as $provider) {
         include $block->getTemplateFile('Nofrixion_Payments::PayByBank.phtml');
     }
-    ?>
+    echo '</div>';
+}
 
-    <div id="pay-by-bank-error"></div>
+// Present Card payment options if 'card' is a payment method type.
+if (in_array('card', $paymentMethods)) {
+    echo '<br/>';
+    echo '<h2 class="sectionHeader">Pay by Card</h2>';
+    include $block->getTemplateFile('Nofrixion_Payments::PayByCard.phtml');
+}
 
-    <div class="hidden">
-        paymentrequestid:
-        <?php echo $paymentRequestId ?> <br />
-        apiurl:
-        <?php echo $apiUrl ?>
-    </div>
+// Create <div> tag where Errors will be injected
+echo '<div id="error-container" role="alert" class=""></div>';
+?>
+
+<div class="hidden">
+    paymentrequestid:
+    <?php echo $paymentRequestId ?> <br />
+    apiurl:
+    <?php echo $apiUrl ?>
 </div>
-<style>
-
-</style>

@@ -12,7 +12,7 @@ div .bankButton {
 
 .bankButton {
     padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
+    padding-bottom: 1rem;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
     border-radius: 0.5rem;
@@ -32,6 +32,38 @@ div .bankButton {
     border-color: #a0aec0;
 }
 
-.nofrixionPrompt {
+.cardButton {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-radius: 0.5rem;
+    border-width: 1px;
+    border-color: #cbd5e0;
+    width: auto;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out;
+    border-color: #cbd5e0;
+}
+
+.cardButton:focus {
+    border-color: #a0aec0;
+}
+
+.cardButton:hover {
+    border-color: #a0aec0;
+}
+
+.sectionHeader {
+    font-weight: bold;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.nfInput {
+    width: 100px !important;
+}
+
+.nfPrompt {
     padding-bottom: 1rem;
 }
