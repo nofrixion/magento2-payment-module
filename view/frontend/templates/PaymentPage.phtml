@@ -11,7 +11,7 @@ $paymentMethods = array_map('trim', $paymentMethods);
 
 // Present PayByBank options if 'pisp' is a payment method type.
 if (in_array('pisp', $paymentMethods)) {
-    echo '<h2 class="sectionHeader">Pay by Bank</h2>';
+    echo '<h2 class="nfHeader">Pay by Bank</h2>';
     echo '<p class="nfPrompt">To pay using your bank account, choose your bank:</p>';
     echo '<div>';
     $pispProviders = $block->getPispProviders();
@@ -25,7 +25,7 @@ if (in_array('pisp', $paymentMethods)) {
 // Present Card payment options if 'card' is a payment method type.
 if (in_array('card', $paymentMethods)) {
     echo '<br/>';
-    echo '<h2 class="sectionHeader">Pay by Card</h2>';
+    echo '<h2 class="nfHeader">Pay by Card</h2>';
     include $block->getTemplateFile('Nofrixion_Payments::PayByCard.phtml');
 }
 

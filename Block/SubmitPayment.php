@@ -37,7 +37,6 @@ class SubmitPayment extends \Magento\Framework\View\Element\Template
 	}
 	public function getPispProviders(): array
 	{
-		$order = $this->getData('order');
-		return $this->helper->getPayByBankSettings($order);
+		return $this->helper->getPayByBankSettings();
 	}
 }

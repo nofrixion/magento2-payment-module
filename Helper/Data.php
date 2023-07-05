@@ -17,9 +17,9 @@ use Magento\Sales\Model\OrderRepository;
 use Magento\Sales\Model\ResourceModel\Order\Status as StatusResource;
 use Magento\Sales\Model\ResourceModel\Order\StatusFactory as StatusResourceFactory;
 use Magento\Store\Model\ScopeInterface;
+use Magento\Store\Model\StoreManagerInterface;
 use Nofrixion\Client\PaymentRequest;
 use Nofrixion\Client\MerchantClient;
-use Nofrixion\Model\Merchant\MerchantPayByBankSettings;
 use Nofrixion\Payments\Model\OrderStatuses;
 use Nofrixion\Util\PreciseNumber;
 use Psr\Log\LoggerInterface;
@@ -33,6 +33,7 @@ class Data
     private TransactionFactory $transactionFactory;
     private StatusFactory $statusFactory;
     private StatusResourceFactory $statusResourceFactory;
+    private StoreManagerInterface $storeManager;
 
     public const ORDER_ID_SEPARATOR = '-';
     private StatusResource\CollectionFactory $statusCollectionFactory;
@@ -45,7 +46,8 @@ class Data
         LoggerInterface $logger,
         StatusFactory $statusFactory,
         StatusResourceFactory $statusResourceFactory,
-        \Magento\Sales\Model\ResourceModel\Order\Status\CollectionFactory $statusCollectionFactory
+        \Magento\Sales\Model\ResourceModel\Order\Status\CollectionFactory $statusCollectionFactory,
+        StoreManagerInterface $storeManager
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->url = $url;
@@ -55,6 +57,7 @@ class Data
         $this->statusFactory = $statusFactory;
         $this->statusResourceFactory = $statusResourceFactory;
         $this->statusCollectionFactory = $statusCollectionFactory;
+        $this->storeManager = $storeManager;
     }
 
     public function isProductionMode(?int $storeId = null): bool
@@ -93,9 +96,9 @@ class Data
         $client = new MerchantClient($baseUrl, $apiToken);
         return $client;
     }
-    public function getPayByBankSettings(Order $order): array
+    public function getPayByBankSettings(): array
     {
-        $storeId = (int) $order->getStoreId();
+        $storeId = (int) $this->storeManager->getStore()->getId();
         $client = $this->getMerchantClient($storeId);
         $merchantId = $client->whoAmIMerchant()->id;
         return $client->getMerchantPayByBankSettings($merchantId);

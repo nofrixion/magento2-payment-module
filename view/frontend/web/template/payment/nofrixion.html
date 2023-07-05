@@ -29,7 +29,12 @@
         <!-- ko foreach: getRegion('messages') -->
         <!-- ko template: getTemplate() --><!-- /ko -->
         <!--/ko-->
+        
+        <div class="nfHeader">Pay By Bank</div>
+        <p class="nfPrompt">Bank icons go here.</p>
+
         <div class="payment-method-billing-address">
+            <div class="nfHeader">Billing:</div>
             <!-- ko foreach: $parent.getRegion(getBillingAddressFormName()) -->
             <!-- ko template: getTemplate() --><!-- /ko -->
             <!--/ko-->
