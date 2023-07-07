@@ -11,7 +11,7 @@ define(
         rendererList.push(
             {
                 type: 'nofrixion',
-                component: 'Nofrixion_Payments/js/view/payment/method-renderer/nofrixion-method'
+                component: 'Nofrixion_Payments/js/view/payment/method-renderer/nofrixion-bank'
             }
         );
         return Component.extend({});

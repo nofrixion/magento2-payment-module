@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../magento-core"
+		}
+	],
+	"settings": {
+		"php.stubs": [
+			"*",
+			"xdebug"
+		]
+	}
+}

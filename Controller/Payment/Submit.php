@@ -6,6 +6,7 @@ namespace Nofrixion\Payments\Controller\Payment;
 
 use Magento\Checkout\Model\Session;
 use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\Result\RedirectFactory;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
@@ -22,6 +23,7 @@ class Submit implements \Magento\Framework\App\ActionInterface
     private CookieManagerInterface $cookieManager;
     private CookieMetadataFactory $cookieMetadataFactory;
     private PageFactory $resultPageFactory;
+    private RequestInterface $request;
     private SessionManagerInterface $sessionManager;
     private Session $checkoutSession;
     private RedirectFactory $resultRedirectfactory;
@@ -33,6 +35,7 @@ class Submit implements \Magento\Framework\App\ActionInterface
         NofrixionHelper $helper,
         PageFactory $resultPageFactory,
         RedirectFactory $resultRedirectFactory,
+        RequestInterface $request,
         Session $checkoutSession,
         SessionManagerInterface $sessionManager
     ) {
@@ -40,6 +43,7 @@ class Submit implements \Magento\Framework\App\ActionInterface
         $this->cookieMetadataFactory = $cookieMetadataFactory;
         $this->customerSession = $customerSession;
         $this->nofrixionHelper = $helper;
+        $this->request = $request;
         $this->resultPageFactory = $resultPageFactory;
         $this->resultRedirectfactory = $resultRedirectFactory;
         $this->checkoutSession = $checkoutSession;
@@ -58,33 +62,39 @@ class Submit implements \Magento\Framework\App\ActionInterface
 
     public function execute()
     {
+        $resultRedirect = $this->resultRedirectfactory->create();
         $order = $this->checkoutSession->getLastRealOrder();
+        $bankId = $this->request->getParam('bankId');
 
         if ($order && $order->getId()) {
             $paymentRequest = $this->nofrixionHelper->createPaymentRequest($order);
 
-            $pendingPaymentStatus = OrderStatuses::STATUS_CODE_PENDING_PAYMENT;
-            $order->addCommentToStatusHistory('Forwarding customer to the hosted payment page', $pendingPaymentStatus);
+            // $pendingPaymentStatus = OrderStatuses::STATUS_CODE_PENDING_PAYMENT;
+            // $order->addCommentToStatusHistory('Forwarding customer to the hosted payment page', $pendingPaymentStatus);
             $order->save();
 
+            // Set cookies for the order/returns page
+            $duration = 30 * 24 * 60 * 60;
+            $this->setCookie('oar_order_id', $order->getIncrementId(), $duration);
             if (!$this->customerSession->isLoggedIn()) {
-                // Set cookies for the order/returns page
-                $duration = 30 * 24 * 60 * 60;
-                $this->setCookie('oar_order_id', $order->getIncrementId(), $duration);
                 $this->setCookie('oar_billing_lastname', $order->getBillingAddress()->getLastName(), $duration);
                 $this->setCookie('oar_email', $order->getCustomerEmail(), $duration);
             }
             // Send payment request and order details to SubmitPayment block and return the payments page
-            $resultPage = $this->resultPageFactory->create();
-            $resultPage->getLayout()->getBlock('submit_payment')->setData('paymentRequest', $paymentRequest);
-            $resultPage->getLayout()->getBlock('submit_payment')->setData('order', $order);
-            return $resultPage;
+            // $resultPage = $this->resultPageFactory->create();
+            // $resultPage->getLayout()->getBlock('submit_payment')->setData('paymentRequest', $paymentRequest);
+            // $resultPage->getLayout()->getBlock('submit_payment')->setData('order', $order);
+            // return $resultPage;
+
+            // need to call: https://api-sandbox.nofrixion.com/api/v1/paymentrequests/{id}/pisp
+            //      with body field 'ProviderID' = $bankId
+            $url = $paymentRequest['hostedPayCheckoutUrl'];
+            $resultRedirect->setUrl($url);
         } else {
             // Send back to the cart page
-            $resultRedirect = $this->resultRedirectfactory->create();
             $resultRedirect->setUrl($order->getStore()->getUrl('checkout/cart'));
-            return $resultRedirect;
         }
+        return $resultRedirect;
     }
 
 

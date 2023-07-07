@@ -6,7 +6,7 @@
 				<active>1</active>
                 <mode>0</mode>
 				<model>Nofrixion\Payments\Model\Payment\Nofrixion</model>
-				<title>Nofrixion</title>
+				<title>Pay by Bank</title>
                 <payment_options>pisp</payment_options>
 				<allowspecific>0</allowspecific>
 				<group>offline</group>

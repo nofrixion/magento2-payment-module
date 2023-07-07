@@ -18,26 +18,79 @@ use Magento\Sales\Model\ResourceModel\Order\Status as StatusResource;
 use Magento\Sales\Model\ResourceModel\Order\StatusFactory as StatusResourceFactory;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use Nofrixion\Client\PaymentRequest;
+use Nofrixion\Client\PaymentRequestClient;
 use Nofrixion\Client\MerchantClient;
 use Nofrixion\Payments\Model\OrderStatuses;
 use Nofrixion\Util\PreciseNumber;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Data Helper for managing NoFrixion MoneyMoov API calls from magento via the moneymoov-php library
+ * 
+ * @todo create Models for payment request in moneymoov-php and implement here.
+ */
 class Data
 {
+    /**
+     * scopeConfig - allows access to plugin configuration settings.
+     * @var ScopeConfigInterface
+     */
     private ScopeConfigInterface $scopeConfig;
+    /**
+     * Summary of url
+     * @var UrlInterface
+     */
     private UrlInterface $url;
+    /**
+     * Set uup logging
+     * @var LoggerInterface
+     */
     private LoggerInterface $logger;
+    /**
+     * Summary of orderRepository
+     * @var OrderRepository
+     */
     private OrderRepository $orderRepository;
+    /**
+     * Summary of transactionFactory
+     * @var TransactionFactory
+     */
     private TransactionFactory $transactionFactory;
+    /**
+     * Summary of statusFactory
+     * @var Order\StatusFactory
+     */
     private StatusFactory $statusFactory;
+    /**
+     * Summary of statusResourceFactory
+     * @var StatusResourceFactory
+     */
     private StatusResourceFactory $statusResourceFactory;
+    /**
+     * Summary of storeManager
+     * @var StoreManagerInterface
+     */
     private StoreManagerInterface $storeManager;
 
     public const ORDER_ID_SEPARATOR = '-';
+    /**
+     * Summary of statusCollectionFactory
+     * @var StatusResource\CollectionFactory
+     */
     private StatusResource\CollectionFactory $statusCollectionFactory;
 
+    /**
+     * Set up dependency injection from core magento framework
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+     * @param \Magento\Framework\UrlInterface $url
+     * @param \Magento\Sales\Model\OrderRepository $orderRepository
+     * @param \Magento\Framework\DB\TransactionFactory $transactionFactory
+     * @param \Psr\Log\LoggerInterface $logger
+     * @param \Magento\Sales\Model\Order\StatusFactory $statusFactory
+     * @param \Magento\Sales\Model\ResourceModel\Order\StatusFactory $statusResourceFactory
+     * @param \Magento\Sales\Model\ResourceModel\Order\Status\CollectionFactory $statusCollectionFactory
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         UrlInterface $url,
@@ -60,6 +113,11 @@ class Data
         $this->storeManager = $storeManager;
     }
 
+    /**
+     * determine if store is using sandbox or production merchant token.
+     * @param mixed $storeId
+     * @return bool
+     */
     public function isProductionMode(?int $storeId = null): bool
     {
         $paymentMode = $this->scopeConfig->getValue('payment/nofrixion/mode', ScopeInterface::SCOPE_STORE, $storeId);
@@ -70,6 +128,10 @@ class Data
         }
     }
 
+    /**
+     * Returns sandbox or production API url as appropriate to plugin mode.
+     * @return string
+     */
     public function getApiBaseUrl(): string
     {
         if ($this->isProductionMode()) {
@@ -79,6 +141,11 @@ class Data
         }
     }
 
+    /**
+     * Returns sandbox or production merchant token as appropriate to plugin mode.
+     * @param mixed $storeId
+     * @return string
+     */
     public function getApiToken(?int $storeId = null): string
     {
         if ($this->isProductionMode($storeId)) {
@@ -89,6 +156,11 @@ class Data
         return $apiToken;
     }
     
+    /**
+     * Summary of getMerchantClient
+     * @param mixed $storeId
+     * @return \Nofrixion\Client\MerchantClient
+     */
     public function getMerchantClient(?int $storeId = null): MerchantClient
     {
         $apiToken = $this->getApiToken($storeId);
@@ -96,6 +168,10 @@ class Data
         $client = new MerchantClient($baseUrl, $apiToken);
         return $client;
     }
+    /**
+     * Summary of getPayByBankSettings
+     * @return array
+     */
     public function getPayByBankSettings(): array
     {
         $storeId = (int) $this->storeManager->getStore()->getId();
@@ -104,14 +180,25 @@ class Data
         return $client->getMerchantPayByBankSettings($merchantId);
     }
     
-    public function getPaymentRequestClient(?int $storeId = null): PaymentRequest
+    /**
+     * Summary of getPaymentRequestClient
+     * @param mixed $storeId
+     * @return \Nofrixion\Client\PaymentRequestClient
+     */
+    public function getPaymentRequestClient(?int $storeId = null): PaymentRequestClient
     {
         $apiToken = $this->getApiToken($storeId);
         $baseUrl = $this->getApiBaseUrl();
-        $client = new PaymentRequest($baseUrl, $apiToken);
+        $client = new PaymentRequestClient($baseUrl, $apiToken);
         return $client;
     }
 
+    /**
+     * Summary of createPaymentRequest
+     * @param \Magento\Sales\Model\Order $order
+     * @return array
+     * @todo paymentMethodTypes should reflect method used at checkout.
+     */
     public function createPaymentRequest(Order $order): array
     {
         $storeId = (int) $order->getStoreId();
@@ -141,12 +228,23 @@ class Data
         return $paymentRequest;
     }
 
+    /**
+     * Gets PaymentRequest by Payment Request Id
+     * @param string $id
+     * @param int $storeId
+     * @return array
+     */
     public function getPaymentRequest(string $id, int $storeId): array
     {
         $client = $this->getPaymentRequestClient($storeId);
         return $client->getPaymentRequest($id);
     }
 
+    /**
+     * Summary of processPayment
+     * @param array $paymentRequest
+     * @return \Magento\Sales\Api\Data\OrderInterface
+     */
     public function processPayment(array $paymentRequest): OrderInterface
     {
         $nofrixionOrderId = $paymentRequest['orderID'];
@@ -219,23 +317,46 @@ class Data
         return $order;
     }
 
+    /**
+     * Summary of getPaymentRequestByOrderId
+     * @param mixed $nofrixionOrderId
+     * @return array
+     */
     public function getPaymentRequestByOrderId(mixed $nofrixionOrderId): array
     {
         return $this->getPaymentRequestClient()->getPaymentRequestByOrderId($nofrixionOrderId);
     }
 
+    /**
+     * Summary of encodeOrderId
+     * @param \Magento\Sales\Model\Order $order
+     * @return string
+     */
     public function encodeOrderId(Order $order): string
     {
         $r = $order->getId() . self::ORDER_ID_SEPARATOR . time();
         return $r;
     }
 
+    /**
+     * Summary of decodeOrderId
+     * @param string $nofrixionOrderId
+     * @return string
+     */
     public function decodeOrderId(string $nofrixionOrderId): string
     {
         $r = explode(self::ORDER_ID_SEPARATOR, $nofrixionOrderId)[0];
         return $r;
     }
 
+    /**
+     * Summary of refund
+     * @param \Magento\Payment\Model\InfoInterface $payment
+     * @param mixed $amount
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
+     * @return void
+     */
     public function refund(\Magento\Payment\Model\InfoInterface $payment, $amount)
     {
         if ($payment instanceof Payment) {
@@ -259,6 +380,12 @@ class Data
     }
 
 
+    /**
+     * Summary of addNewStatusToState
+     * @param string $state
+     * @param array $statusData
+     * @return void
+     */
     public function addNewStatusToState(string $state, array $statusData): void
     {
         /* @var StatusResource $statusResource */
@@ -273,6 +400,11 @@ class Data
         $status->assignState($state, false, true);
     }
 
+    /**
+     * Summary of fixOrderState
+     * @param \Magento\Sales\Api\Data\OrderInterface $order
+     * @return void
+     */
     private function fixOrderState(OrderInterface $order): void
     {
         $status = $order->getStatus();
