@@ -12,6 +12,7 @@ use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
 use Magento\Framework\Stdlib\CookieManagerInterface;
 use Magento\Framework\View\Result\PageFactory;
+use Nofrixion\Model\PaymentRequests\PaymentInitiationResponse;
 use Nofrixion\Payments\Helper\Data as NofrixionHelper;
 use Nofrixion\Payments\Model\OrderStatuses;
 
@@ -80,16 +81,11 @@ class Submit implements \Magento\Framework\App\ActionInterface
                 $this->setCookie('oar_billing_lastname', $order->getBillingAddress()->getLastName(), $duration);
                 $this->setCookie('oar_email', $order->getCustomerEmail(), $duration);
             }
-            // Send payment request and order details to SubmitPayment block and return the payments page
-            // $resultPage = $this->resultPageFactory->create();
-            // $resultPage->getLayout()->getBlock('submit_payment')->setData('paymentRequest', $paymentRequest);
-            // $resultPage->getLayout()->getBlock('submit_payment')->setData('order', $order);
-            // return $resultPage;
 
             // need to call: https://api-sandbox.nofrixion.com/api/v1/paymentrequests/{id}/pisp
             //      with body field 'ProviderID' = $bankId
-            $url = $paymentRequest['hostedPayCheckoutUrl'];
-            $resultRedirect->setUrl($url);
+            $paymentInitialization = $this->nofrixionHelper->initiatePayByBank($paymentRequest['id'], $bankId);
+            $resultRedirect->setUrl($paymentInitialization->redirectUrl);
         } else {
             // Send back to the cart page
             $resultRedirect->setUrl($order->getStore()->getUrl('checkout/cart'));

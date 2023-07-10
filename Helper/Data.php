@@ -20,6 +20,7 @@ use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Nofrixion\Client\PaymentRequestClient;
 use Nofrixion\Client\MerchantClient;
+use Nofrixion\Model\PaymentRequests\PaymentInitiationResponse;
 use Nofrixion\Payments\Model\OrderStatuses;
 use Nofrixion\Util\PreciseNumber;
 use Psr\Log\LoggerInterface;
@@ -155,7 +156,7 @@ class Data
         }
         return $apiToken;
     }
-    
+
     /**
      * Summary of getMerchantClient
      * @param mixed $storeId
@@ -179,7 +180,16 @@ class Data
         $merchantId = $client->whoAmIMerchant()->id;
         return $client->getMerchantPayByBankSettings($merchantId);
     }
-    
+
+    public function initiatePayByBank(
+        string $paymentRequestId,
+        string $bankId
+    ): PaymentInitiationResponse {
+        $storeId = (int) $this->storeManager->getStore()->getId();
+        $client = $this->getPaymentRequestClient($storeId);
+        return $client->initiatePayByBank($paymentRequestId, $bankId);
+    }
+
     /**
      * Summary of getPaymentRequestClient
      * @param mixed $storeId
