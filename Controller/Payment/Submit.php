@@ -15,6 +15,7 @@ use Magento\Framework\View\Result\PageFactory;
 use Nofrixion\Model\PaymentRequests\PaymentInitiationResponse;
 use Nofrixion\Payments\Helper\Data as NofrixionHelper;
 use Nofrixion\Payments\Model\OrderStatuses;
+use Nofrixion\Util\PreciseNumber;
 
 class Submit implements \Magento\Framework\App\ActionInterface
 {
@@ -63,9 +64,12 @@ class Submit implements \Magento\Framework\App\ActionInterface
 
     public function execute()
     {
+
+        xdebug_break();
+        
         $resultRedirect = $this->resultRedirectfactory->create();
         $order = $this->checkoutSession->getLastRealOrder();
-        $bankId = $this->request->getParam('bankId');
+        $bankId = rawurldecode($this->request->getParam('bankId'));
 
         if ($order && $order->getId()) {
             $paymentRequest = $this->nofrixionHelper->createPaymentRequest($order);
@@ -84,7 +88,8 @@ class Submit implements \Magento\Framework\App\ActionInterface
 
             // need to call: https://api-sandbox.nofrixion.com/api/v1/paymentrequests/{id}/pisp
             //      with body field 'ProviderID' = $bankId
-            $paymentInitialization = $this->nofrixionHelper->initiatePayByBank($paymentRequest['id'], $bankId);
+            $amount = PreciseNumber::parseString((string) $paymentRequest['amount']);
+            $paymentInitialization = $this->nofrixionHelper->initiatePayByBank($paymentRequest['id'], $bankId, null);
             $resultRedirect->setUrl($paymentInitialization->redirectUrl);
         } else {
             // Send back to the cart page

@@ -45,7 +45,11 @@
         </div>
 
         <!-- ko if: (isCustomerLoggedIn)-->
-        <div class="message-warning nfPrompt"><p>Warning: Customer is logged in.</p></div>
+        <div class="message-warning nfPrompt"><p>You are logged in.</p></div>
+        <!-- /ko-->
+        
+        <!-- ko if: (!window.checkoutConfig.isCustomerLoggedIn)-->
+        <div class="message-warning nfWarning"><p>Warning: You are NOT logged in.</p></div>
         <!-- /ko-->
         
         <div class="checkout-agreements-block">

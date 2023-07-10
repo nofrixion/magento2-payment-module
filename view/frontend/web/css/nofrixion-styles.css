@@ -68,3 +68,8 @@ div .bankButton {
 .nfPrompt {
     padding-bottom: 1rem;
 }
+
+.nfWarning {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}

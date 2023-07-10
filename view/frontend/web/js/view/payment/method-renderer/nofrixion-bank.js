@@ -22,12 +22,12 @@ define(
             isCustomerLoggedIn: Customer.isLoggedIn,
             redirectAfterPlaceOrder: false,
             afterPlaceOrder: function () {
-                var url = baseRedirectUrl + '?bankId=' + payByBankProviderId;
+                var url = baseRedirectUrl + '?bankId=' + encodeURIComponent(payByBankProviderId);
                 console.log('Redirecting to : ' + url);
                 $.mage.redirect(url);
             },
             initiatePayment: function (data, event) {
-                payByBankProviderId = data.bankId;
+                payByBankProviderId = data.personalInstitutionID;
                 self.placeOrder(data, event);
             }
         });

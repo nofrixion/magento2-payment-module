@@ -178,16 +178,23 @@ class Data
         $storeId = (int) $this->storeManager->getStore()->getId();
         $client = $this->getMerchantClient($storeId);
         $merchantId = $client->whoAmIMerchant()->id;
-        return $client->getMerchantPayByBankSettings($merchantId);
+
+        $settings = $client->getMerchantPayByBankSettings($merchantId);
+        // quick filter base on currency
+        $settings = array_values(array_filter($settings, function($bank) {
+            return $bank->currency === "EUR";
+        }));
+        return $settings;
     }
 
     public function initiatePayByBank(
         string $paymentRequestId,
-        string $bankId
+        string $bankId,
+        ?PreciseNumber $amount
     ): PaymentInitiationResponse {
         $storeId = (int) $this->storeManager->getStore()->getId();
         $client = $this->getPaymentRequestClient($storeId);
-        return $client->initiatePayByBank($paymentRequestId, $bankId);
+        return $client->initiatePayByBank($paymentRequestId, $bankId, $amount);
     }
 
     /**
