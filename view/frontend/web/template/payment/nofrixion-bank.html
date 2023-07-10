@@ -27,15 +27,16 @@
 
     <div class="payment-method-content">
         <!-- ko foreach: getRegion('messages') -->
-        <!-- ko template: getTemplate() --><!-- /ko -->
+        <!-- ko template: getTemplate() -->
+        <!-- /ko -->
         <!--/ko-->
         
         <div class="actions-toolbar">
             <div class="nfPrompt">Click your bank's logo to commence payment</div>
-            <!-- ko foreach: window.checkoutConfig.payment.nofrixion.pispProviders -->
+            <!-- ko foreach: window.checkoutConfig.payment.nofrixion.payByBankProviders -->
             <button class="bankButton"" type="button" disabled
                 data-bind="
-                    click: $parent.processPayment,
+                    click: $parent.initiatePayment,
                     enable: ($parent.getCode() == $parent.isChecked())
                 ">
                 <img data-bind="attr:{src: logo, alt: bankName}">
@@ -43,9 +44,8 @@
             <!--/ko-->
         </div>
 
-        <!-- ko if: (!isCustomerLoggedIn)-->
-        <div class="message-warning nfPrompt"><p>Warning: You are not logged in. If there is an issue in your bank's payment processing your cart may be lost. 
-            We recommend signing into the store.</p></div>
+        <!-- ko if: (isCustomerLoggedIn)-->
+        <div class="message-warning nfPrompt"><p>Warning: Customer is logged in.</p></div>
         <!-- /ko-->
         
         <div class="checkout-agreements-block">

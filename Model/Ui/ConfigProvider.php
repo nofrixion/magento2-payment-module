@@ -32,7 +32,7 @@ class ConfigProvider implements ConfigProviderInterface
                         '_secure' => true,
                         '_nosid' => true
                     ]),
-                    'pispProviders' => $this->helper->getPayByBankSettings()
+                    'payByBankProviders' => $this->helper->getPayByBankSettings()
                 ]
             ]
         ];

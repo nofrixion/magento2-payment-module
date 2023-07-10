@@ -26,14 +26,9 @@ define(
                 console.log('Redirecting to : ' + url);
                 $.mage.redirect(url);
             },
-            processPayment: function (data, event) {
-                // 'this' is the view model object containing 'processPayment' call.
-                payByBankProviderId = this.bankId;
+            initiatePayment: function (data, event) {
+                payByBankProviderId = data.bankId;
                 self.placeOrder(data, event);
-                console.log('Done processing.');
-            },
-            testMethod: function () {
-                console.log('Test method');
             }
         });
     }
