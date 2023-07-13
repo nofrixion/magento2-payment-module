@@ -2,5 +2,6 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
 	<head>
 		<css src="Nofrixion_Payments::css/nofrixion-styles.css"/>
+		<link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'></link>
 	</head>
 </page>

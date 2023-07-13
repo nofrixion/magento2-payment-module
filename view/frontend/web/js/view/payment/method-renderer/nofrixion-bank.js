@@ -19,29 +19,18 @@ define(
                 this._super();
                 self = this;
             },
+            initiatePayment: function (data, event) {
+                payByBankProviderId = data.personalInstitutionID;
+                //self.isProcessing =true;
+                self.placeOrder(data, event);
+            },
             isCustomerLoggedIn: Customer.isLoggedIn,
+            isProcessing: false,
             redirectAfterPlaceOrder: false,
-            processing: false,
             afterPlaceOrder: function () {
                 var url = baseRedirectUrl + '?bankId=' + encodeURIComponent(payByBankProviderId);
                 console.log('Redirecting to : ' + url);
                 $.mage.redirect(url);
-            },
-            initiated: false,
-            initiatePayment: function (data, event) {
-                payByBankProviderId = data.personalInstitutionID;
-                self.placeOrder(data, event);
-            },
-            setBankButtonsPrompt: function () {
-                const prompts = [
-                    "Click your bank's logo to commence payment",
-                    "A valid email address and billing address are reqiured to enable pay by bank"
-                ];
-                if (self.isPlaceOrderActionAllowed() || self.initiated) {
-                    return prompts[0];
-                } else {
-                    return prompts[1];
-                }
             }
         });
     }
