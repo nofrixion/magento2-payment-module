@@ -25,18 +25,26 @@
 
     </div>
 
-    <div class="payment-method-content">
+    <div class="payment-method-content nfPaymentSection">
         <!-- ko foreach: getRegion('messages') -->
         <!-- ko template: getTemplate() -->
         <!-- /ko -->
         <!--/ko-->
-        
+
         <div class="actions-toolbar">
+
+            <!-- ko if: isPlaceOrderActionAllowed() -->
             <div class="nfPrompt">Click your bank's logo to commence payment</div>
+            <!--/ko-->
+
+            <!-- ko ifnot: isPlaceOrderActionAllowed() -->
+            <div class="nfPrompt" >Email and billing address are required for pay by bank.</div>
+            <!--/ko-->
+
             <!-- ko foreach: window.checkoutConfig.payment.nofrixion.payByBankProviders -->
-            <button class="bankButton"" type="button" disabled
-                data-bind="
+            <button class="bankButton"" type=" button" disabled data-bind="
                     click: $parent.initiatePayment,
+                    css: {disabled: !$parent.isPlaceOrderActionAllowed()},
                     enable: ($parent.getCode() == $parent.isChecked())
                 ">
                 <img data-bind="attr:{src: logo, alt: bankName}">
@@ -44,14 +52,20 @@
             <!--/ko-->
         </div>
 
-        <!-- ko if: (isCustomerLoggedIn)-->
-        <div class="message-warning nfPrompt"><p>You are logged in.</p></div>
+        <!-- ko ifnot: (isCustomerLoggedIn)-->
+        <div class="nfPaymentSection">
+            <span>Warning: You are NOT logged in. If your financial institution has difficulties
+                completing payment registering and signing in improves the chance of your cart being restored.
+            </span>
+        </div>
         <!-- /ko-->
-        
-        <!-- ko if: (!window.checkoutConfig.isCustomerLoggedIn)-->
-        <div class="message-warning nfWarning"><p>Warning: You are NOT logged in.</p></div>
-        <!-- /ko-->
-        
+
+        <div class="payment-method-billing-address nfPaymentSection">
+            <!-- ko foreach: $parent.getRegion(getBillingAddressFormName()) -->
+            <!-- ko template: getTemplate() --><!-- /ko -->
+            <!--/ko-->
+        </div>
+
         <div class="checkout-agreements-block">
             <!-- ko foreach: $parent.getRegion('before-place-order') -->
             <!-- ko template: getTemplate() --><!-- /ko -->

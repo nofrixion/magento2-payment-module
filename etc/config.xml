@@ -8,6 +8,8 @@
 				<model>Nofrixion\Payments\Model\Payment\Nofrixion</model>
 				<title>Pay by Bank</title>
                 <payment_options>pisp</payment_options>
+                <pisp_currency>EUR</pisp_currency>
+				<cards_title>Pay by Card</cards_title>
 				<allowspecific>0</allowspecific>
 				<group>offline</group>
 			</nofrixion>

@@ -27,8 +27,7 @@ class ConfigProvider implements ConfigProviderInterface
         $data = [
             'payment' => [
                 Nofrixion::CODE => [
-                    // 'paymentRedirectUrl' => $this->url->getUrl('nofrixion/redirect/forwardToPayment', [
-                    'paymentRedirectUrl' => $this->url->getUrl('nofrixion/payment/submit', [
+                    'paymentRedirectUrl' => $this->url->getUrl('nofrixion/payment/initiatepayment', [
                         '_secure' => true,
                         '_nosid' => true
                     ]),

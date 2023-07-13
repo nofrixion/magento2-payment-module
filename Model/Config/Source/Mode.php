@@ -8,7 +8,10 @@ class Mode implements \Magento\Framework\Data\OptionSourceInterface
 
     public function toOptionArray()
     {
-        return [['value' => '1', 'label' => __('Production Mode')], ['value' => '0', 'label' => __('Sandbox Mode')]];
+        return [
+            ['value' => '1', 'label' => __('Production Mode')],
+            ['value' => '0', 'label' => __('Sandbox Mode')],
+        ];
     }
 
 }
