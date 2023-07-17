@@ -10,6 +10,7 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\Result\RedirectFactory;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Session\SessionManagerInterface;
+use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Sales\Model\Order;
 use Nofrixion\Payments\Helper\Data as NofrixionHelper;
@@ -31,10 +32,11 @@ class InitiatePayment implements \Magento\Framework\App\ActionInterface
     private LoggerInterface $logger;
     private ManagerInterface $messageManager;
     private PageFactory $resultPageFactory;
+    private RedirectFactory $resultRedirectFactory;
     private RequestInterface $request;
     private SessionManagerInterface $sessionManager;
     private Session $checkoutSession;
-    private RedirectFactory $resultRedirectFactory;
+    private UrlInterface $url;
 
     public function __construct(
         CustomerSession $customerSession,
@@ -45,7 +47,8 @@ class InitiatePayment implements \Magento\Framework\App\ActionInterface
         RedirectFactory $resultRedirectFactory,
         RequestInterface $request,
         Session $checkoutSession,
-        SessionManagerInterface $sessionManager
+        SessionManagerInterface $sessionManager,
+        UrlInterface $url
     ) {
         $this->customerSession = $customerSession;
         $this->logger = $logger;
@@ -56,6 +59,7 @@ class InitiatePayment implements \Magento\Framework\App\ActionInterface
         $this->resultRedirectFactory = $resultRedirectFactory;
         $this->checkoutSession = $checkoutSession;
         $this->sessionManager = $sessionManager;
+        $this->url = $url;
     }
 
     /**
@@ -80,8 +84,8 @@ class InitiatePayment implements \Magento\Framework\App\ActionInterface
             // need to call: https://api-sandbox.nofrixion.com/api/v1/paymentrequests/{id}/pisp
             //      with body field 'ProviderID' = $bankId
             // $amount = PreciseNumber::parseString((string) $paymentRequest['amount']);
-            $failureUrl = $this->nofrixionHelper->url->getUrl('checkout/cart', ['_secure' => true]);
-            $paymentInitialization = $this->nofrixionHelper->initiatePayByBank($paymentRequest['id'], $bankId, $failureUrl, null);
+            $failureRedirectUrl = $this->url->getUrl('checkout/cart', ['_secure' => true]);
+            $paymentInitialization = $this->nofrixionHelper->initiatePayByBank($paymentRequest['id'], $bankId, $failureRedirectUrl, null);
 
             // Can't handle exception caused by null URL in controller so check with 'if' and 'filter_var'
             if (filter_var($paymentInitialization->redirectUrl, FILTER_VALIDATE_URL)) {
