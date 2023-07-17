@@ -199,10 +199,14 @@ class Data
         $settings = $client->getMerchantPayByBankSettings($merchantId);
         // quick filter base on currency, may not be needed after API update
         $currency = $this->scopeConfig->getValue('payment/nofrixion/pisp_currency', ScopeInterface::SCOPE_STORE, $storeId);
-
+        
+        $this->logger->info('Found ' .  count($settings) . 'PIS providers for merchant ID: ' . $merchantId);
+        
         $settings = array_values(array_filter($settings, function($bank) use ($currency) {
             return $bank->currency === $currency;
         }));
+
+        $this->logger->info('Returning ' .  count($settings) . ' ' . $currency . ' providers.');
         return $settings;
     }
 
