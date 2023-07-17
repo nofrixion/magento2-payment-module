@@ -82,7 +82,7 @@ class InitiatePayment implements \Magento\Framework\App\ActionInterface
             // need to call: https://api-sandbox.nofrixion.com/api/v1/paymentrequests/{id}/pisp
             //      with body field 'ProviderID' = $bankId
             // $amount = PreciseNumber::parseString((string) $paymentRequest['amount']);
-            $paymentInitialization = $this->nofrixionHelper->initiatePayByBank($paymentRequest['id'], $bankId, null);
+            $paymentInitialization = $this->nofrixionHelper->initiatePayByBank($paymentRequest['id'], $bankId, "https://localhost", null);
 
             // Can't handle exception caused by null URL in controller so check with 'if' and 'filter_var'
             if (filter_var($paymentInitialization->redirectUrl, FILTER_VALIDATE_URL)) {

@@ -209,11 +209,12 @@ class Data
     public function initiatePayByBank(
         string $paymentRequestId,
         string $bankId,
+        ?string $redirectToOriginUrl,
         ?PreciseNumber $amount
     ): PaymentInitiationResponse {
         $storeId = (int) $this->storeManager->getStore()->getId();
         $client = $this->getPaymentRequestClient($storeId);
-        return $client->initiatePayByBank($paymentRequestId, $bankId, $amount);
+        return $client->initiatePayByBank($paymentRequestId, $bankId, $redirectToOriginUrl, $amount);
     }
 
     /**
