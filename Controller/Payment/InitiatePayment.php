@@ -67,8 +67,6 @@ class InitiatePayment implements \Magento\Framework\App\ActionInterface
         //xdebug_break();
 
         $resultRedirect = $this->resultRedirectFactory->create();
-
-        $nofrixionMessages = array();
         $bankId = rawurldecode($this->request->getParam('bankId'));
 
         $order = $this->checkoutSession->getLastRealOrder();
@@ -82,7 +80,8 @@ class InitiatePayment implements \Magento\Framework\App\ActionInterface
             // need to call: https://api-sandbox.nofrixion.com/api/v1/paymentrequests/{id}/pisp
             //      with body field 'ProviderID' = $bankId
             // $amount = PreciseNumber::parseString((string) $paymentRequest['amount']);
-            $paymentInitialization = $this->nofrixionHelper->initiatePayByBank($paymentRequest['id'], $bankId, "https://localhost", null);
+            $failureUrl = $this->nofrixionHelper->url->getUrl('checkout/cart', ['_secure' => true]);
+            $paymentInitialization = $this->nofrixionHelper->initiatePayByBank($paymentRequest['id'], $bankId, $failureUrl, null);
 
             // Can't handle exception caused by null URL in controller so check with 'if' and 'filter_var'
             if (filter_var($paymentInitialization->redirectUrl, FILTER_VALIDATE_URL)) {
@@ -94,7 +93,6 @@ class InitiatePayment implements \Magento\Framework\App\ActionInterface
                     $this->logger->error('Error initializing payment.', ['exception' => $e]);
                     $this->initializationFailureAction($order, $paymentRequest, 'Order cancelled due to payment initialization error.');
                 }
-
             } else {
                 // or $paymentInitialization->redirectUrl is invalid.
                 $msg = 'A valid payment URL was not received for provider ' . $bankId;
