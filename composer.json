@@ -8,13 +8,12 @@
             "email": "wouter.samaey@storefront.be"
         },
         {
-            "name": "James Bramich",
-            "email": "james@nofrixion.com"
+            "name": "NoFrixion Development Team"
         }
     ],
     "license": "MIT",
     "require": {
-        "nofrixion/moneymoov-php": "dev-feature/merchant-bank-settings"
+        "nofrixion/moneymoov-php": "dev-feature-pisp-initiate"
     },
     "autoload": {
         "files": [
