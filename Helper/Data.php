@@ -200,7 +200,7 @@ class Data
         // quick filter base on currency, may not be needed after API update
         $currency = $this->scopeConfig->getValue('payment/nofrixion/pisp_currency', ScopeInterface::SCOPE_STORE, $storeId);
 
-        $settings = array_values(array_filter($settings, function ($bank) use ($currency) {
+        $settings = array_values(array_filter($settings, function($bank) use ($currency) {
             return $bank->currency === $currency;
         }));
         return $settings;
