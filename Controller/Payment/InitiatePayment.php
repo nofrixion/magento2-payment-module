@@ -10,8 +10,6 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\Result\RedirectFactory;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Session\SessionManagerInterface;
-use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
-use Magento\Framework\Stdlib\CookieManagerInterface;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Sales\Model\Order;
 use Nofrixion\Payments\Helper\Data as NofrixionHelper;
@@ -22,7 +20,6 @@ use Psr\Log\LoggerInterface;
 /**
  * InitiatePayment - controller that creates Magento Order, NoFrixion payment request and initializes payment. 
  * @todo add card handling
- * @todo add a logger.
  * @todo error handling around payment request creation.
  */
 class InitiatePayment implements \Magento\Framework\App\ActionInterface
@@ -40,8 +37,6 @@ class InitiatePayment implements \Magento\Framework\App\ActionInterface
     private RedirectFactory $resultRedirectFactory;
 
     public function __construct(
-        CookieManagerInterface $cookieManager,
-        CookieMetadataFactory $cookieMetadataFactory,
         CustomerSession $customerSession,
         LoggerInterface $logger,
         ManagerInterface $messageManager,
@@ -52,8 +47,6 @@ class InitiatePayment implements \Magento\Framework\App\ActionInterface
         Session $checkoutSession,
         SessionManagerInterface $sessionManager
     ) {
-        $this->cookieManager = $cookieManager;
-        $this->cookieMetadataFactory = $cookieMetadataFactory;
         $this->customerSession = $customerSession;
         $this->logger = $logger;
         $this->messageManager = $messageManager;
@@ -63,16 +56,6 @@ class InitiatePayment implements \Magento\Framework\App\ActionInterface
         $this->resultRedirectFactory = $resultRedirectFactory;
         $this->checkoutSession = $checkoutSession;
         $this->sessionManager = $sessionManager;
-    }
-
-    private function setCookie($name, $value, $duration)
-    {
-        $path = $this->sessionManager->getCookiePath();
-        $domain = $this->sessionManager->getCookieDomain();
-
-        $metadata = $this->cookieMetadataFactory->createPublicCookieMetadata()->setDuration($duration)->setPath($path)->setDomain($domain);
-
-        $this->cookieManager->setPublicCookie($name, $value, $metadata);
     }
 
     /**
@@ -95,14 +78,6 @@ class InitiatePayment implements \Magento\Framework\App\ActionInterface
             $pendingPaymentStatus = OrderStatuses::STATUS_CODE_PENDING_PAYMENT;
             $order->addCommentToStatusHistory('Forwarded customer to payment page', $pendingPaymentStatus);
             $order->save();
-
-            // Set cookies for the order/returns page
-            $duration = 30 * 24 * 60 * 60;
-            $this->setCookie('oar_order_id', $order->getIncrementId(), $duration);
-            if (!$this->customerSession->isLoggedIn()) {
-                $this->setCookie('oar_billing_lastname', $order->getBillingAddress()->getLastName(), $duration);
-                $this->setCookie('oar_email', $order->getCustomerEmail(), $duration);
-            }
 
             // need to call: https://api-sandbox.nofrixion.com/api/v1/paymentrequests/{id}/pisp
             //      with body field 'ProviderID' = $bankId
