@@ -8,15 +8,21 @@ use Magento\Checkout\Model\Session;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\Result\RedirectFactory;
+use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
 use Magento\Framework\Stdlib\CookieManagerInterface;
 use Magento\Framework\View\Result\PageFactory;
+use Magento\Quote\Model\QuoteFactory;
+use Magento\Sales\Model\Order;
+use Magento\Sales\Api\OrderManagementInterface;
 use Nofrixion\Payments\Helper\Data as NofrixionHelper;
+use Nofrixion\Payments\Model\OrderStatuses;
 use Nofrixion\Util\PreciseNumber;
+use Psr\Log\LoggerInterface;
 
 /**
- * InitiatePayment - controller that creates Magento Order, NoFrixion payment request and initialises payment. 
+ * InitiatePayment - controller that creates Magento Order, NoFrixion payment request and initializes payment. 
  * @todo add card handling
  * @todo add a logger.
  * @todo error handling around payment request creation.
@@ -27,30 +33,26 @@ class InitiatePayment implements \Magento\Framework\App\ActionInterface
     private CustomerSession $customerSession;
     private CookieManagerInterface $cookieManager;
     private CookieMetadataFactory $cookieMetadataFactory;
+    private LoggerInterface $logger;
+    private ManagerInterface $messageManager;
+    private OrderManagementInterface $orderManager;
     private PageFactory $resultPageFactory;
+    private QuoteFactory $quoteFactory;
     private RequestInterface $request;
     private SessionManagerInterface $sessionManager;
     private Session $checkoutSession;
-    private RedirectFactory $resultRedirectfactory;
+    private RedirectFactory $resultRedirectFactory;
 
-    /**
-     * Summary of __construct
-     * @param \Magento\Framework\Stdlib\CookieManagerInterface $cookieManager
-     * @param \Magento\Framework\Stdlib\Cookie\CookieMetadataFactory $cookieMetadataFactory
-     * @param \Magento\Customer\Model\Session $customerSession
-     * @param \Nofrixion\Payments\Helper\Data $helper
-     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
-     * @param \Magento\Framework\Controller\Result\RedirectFactory $resultRedirectFactory
-     * @param \Magento\Framework\App\RequestInterface $request
-     * @param \Magento\Checkout\Model\Session $checkoutSession
-     * @param \Magento\Framework\Session\SessionManagerInterface $sessionManager
-     */
     public function __construct(
         CookieManagerInterface $cookieManager,
         CookieMetadataFactory $cookieMetadataFactory,
         CustomerSession $customerSession,
+        LoggerInterface $logger,
+        ManagerInterface $messageManager,
         NofrixionHelper $helper,
+        OrderManagementInterface $orderManager,
         PageFactory $resultPageFactory,
+        QuoteFactory $quoteFactory,
         RedirectFactory $resultRedirectFactory,
         RequestInterface $request,
         Session $checkoutSession,
@@ -59,21 +61,18 @@ class InitiatePayment implements \Magento\Framework\App\ActionInterface
         $this->cookieManager = $cookieManager;
         $this->cookieMetadataFactory = $cookieMetadataFactory;
         $this->customerSession = $customerSession;
+        $this->logger = $logger;
+        $this->messageManager = $messageManager;
         $this->nofrixionHelper = $helper;
+        $this->orderManager = $orderManager;
         $this->request = $request;
         $this->resultPageFactory = $resultPageFactory;
-        $this->resultRedirectfactory = $resultRedirectFactory;
+        $this->quoteFactory = $quoteFactory;
+        $this->resultRedirectFactory = $resultRedirectFactory;
         $this->checkoutSession = $checkoutSession;
         $this->sessionManager = $sessionManager;
     }
 
-    /**
-     * Summary of setCookie
-     * @param mixed $name
-     * @param mixed $value
-     * @param mixed $duration
-     * @return void
-     */
     private function setCookie($name, $value, $duration)
     {
         $path = $this->sessionManager->getCookiePath();
@@ -92,15 +91,17 @@ class InitiatePayment implements \Magento\Framework\App\ActionInterface
     {
         xdebug_break();
 
+        $resultRedirect = $this->resultRedirectFactory->create();
+
         $nofrixionMessages = array();
-        $order = $this->checkoutSession->getLastRealOrder();
         $bankId = rawurldecode($this->request->getParam('bankId'));
 
+        $order = $this->checkoutSession->getLastRealOrder();
         if ($order && $order->getId()) {
             $paymentRequest = $this->nofrixionHelper->createPaymentRequest($order);
 
-            // $pendingPaymentStatus = OrderStatuses::STATUS_CODE_PENDING_PAYMENT;
-            // $order->addCommentToStatusHistory('Forwarding customer to the hosted payment page', $pendingPaymentStatus);
+            $pendingPaymentStatus = OrderStatuses::STATUS_CODE_PENDING_PAYMENT;
+            $order->addCommentToStatusHistory('Forwarded customer to payment page', $pendingPaymentStatus);
             $order->save();
 
             // Set cookies for the order/returns page
@@ -113,33 +114,61 @@ class InitiatePayment implements \Magento\Framework\App\ActionInterface
 
             // need to call: https://api-sandbox.nofrixion.com/api/v1/paymentrequests/{id}/pisp
             //      with body field 'ProviderID' = $bankId
-            $amount = PreciseNumber::parseString((string) $paymentRequest['amount']);
+            // $amount = PreciseNumber::parseString((string) $paymentRequest['amount']);
             $paymentInitialization = $this->nofrixionHelper->initiatePayByBank($paymentRequest['id'], $bankId, null);
 
-            // Exception thrown in setUrl doesn't seem to bubble back to controller so check with 'if' and 'filter_var'
+            // Can't handle exception caused by null URL in controller so check with 'if' and 'filter_var'
             if (filter_var($paymentInitialization->redirectUrl, FILTER_VALIDATE_URL)) {
-                // $resultRedirect used if forwarding to PIS provider
-                $resultRedirect = $this->resultRedirectfactory->create();
                 $resultRedirect->setUrl($paymentInitialization->redirectUrl);
                 try {
+                    // $resultRedirect used if forwarding to PIS provider
                     return $resultRedirect;
                 } catch (Exception $e) {
-                    array_push($nofrixionMessages, $e->getMessage());
+                    $this->logger->error('Error initializing payment.', ['exception' => $e]);
+                    $this->initializationFailureAction($order, $paymentRequest, 'Order cancelled due to payment initialization error.');
                 }
+
             } else {
-                array_push($nofrixionMessages, 'A valid payment URL was not received for provider: ' . $bankId);
+                // or $paymentInitialization->redirectUrl is invalid.
+                $msg = 'A valid payment URL was not received for provider ' . $bankId;
+                $this->logger->error($msg);
+                $this->initializationFailureAction($order, $paymentRequest, $msg);
             }
+        } else {
+            // If we get to here $order was not valid
+            $this->messageManager->addWarningMessage('An error occurred creating your order.');
         }
-        // If we get to here there was no valid order or $paymentInitialization->redirectUrl is invalid
-        // so display result page with something descriptive on it.
-        $resultPage = $this->resultPageFactory->create();
-        try {
-            $resultPage->getLayout()->getBlock('payment.result')->setData('paymentRequest', $paymentRequest);
-            $resultPage->getLayout()->getBlock('payment.result')->setData('order', $order);
-        } catch (Exception $e) {
-            array_push($nofrixionMessages, $e->getMessage());
+        // if we haven't successfully directed to the payment URL return to cart.
+        $resultRedirect->setPath('checkout/cart');
+        return $resultRedirect;
+    }
+
+    public function initializationFailureAction($order, $paymentRequest, $message){
+        // restore cart
+        $this->restoreCart($order);
+        $this->messageManager->addWarningMessage($message);
+
+        // cancel order
+        $this->orderManager->cancel($order->getId());
+        $order->setStatus(Order::STATE_CANCELED);
+        $order->addStatusToHistory(Order::STATE_CANCELED, '', false);
+        $order->save();
+
+        // delete payment request
+
+    }
+
+    /**
+     * restoreCart - loads an order back into the magento cart (quote)
+     * @param Magento\Sales\Model\Order $order
+     * @return void
+     */
+    public function restoreCart($order)
+    {
+        $quote = $this->quoteFactory->create()->loadByIdWithoutStore($order->getQuoteId());
+        if ($quote->getId()) {
+            $quote->setIsActive(1)->setReservedOrderId(null)->save();
+            $this->checkoutSession->replaceQuote($quote);
         }
-        $resultPage->getLayout()->getBlock('payment.result')->setData('messages', $nofrixionMessages);
-        return $resultPage;
     }
 }

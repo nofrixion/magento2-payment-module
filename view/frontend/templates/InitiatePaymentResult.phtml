@@ -9,7 +9,7 @@ $messages = $block->getMessages();
 
 echo '<div id="error-details" class="nfPaymentSection">';
 echo '<p>An error has occurred processing payment:</p>';
-echo 'Order ID: ' . $order->getId() . '<br/>';
+echo 'Order ID: ' . $order->getIncrementId() . '<br/>';
 echo 'Payment request ID: ' . $paymentRequest['id'] . '<br/>';
 echo '</div>';
 
@@ -18,3 +18,9 @@ foreach ($messages as $msg) {
     echo $msg . '<br/>';
 }
 echo '</div>';
+?>
+
+<br/>
+<button type="button" class="action primary checkout" onclick="window.location.href='<?php echo $block->getUrl('checkout/cart'); ?>'">
+    <span><?php echo __('Return to Cart'); ?></span>
+</button>
