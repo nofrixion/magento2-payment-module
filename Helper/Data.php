@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Nofrixion\Payments\Helper;
 
+use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\DB\TransactionFactory;
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\UrlInterface;
+use Magento\Quote\Model\QuoteFactory;
 use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Invoice;
 use Magento\Sales\Model\Order\Payment;
@@ -32,6 +35,7 @@ use Psr\Log\LoggerInterface;
  */
 class Data
 {
+    private Session $checkoutSession;
     /**
      * scopeConfig - allows access to plugin configuration settings.
      * @var ScopeConfigInterface
@@ -47,11 +51,13 @@ class Data
      * @var LoggerInterface
      */
     private LoggerInterface $logger;
+    private OrderManagementInterface $orderManager;
     /**
      * Summary of orderRepository
      * @var OrderRepository
      */
     private OrderRepository $orderRepository;
+    private QuoteFactory $quoteFactory;
     /**
      * Summary of transactionFactory
      * @var TransactionFactory
@@ -67,6 +73,7 @@ class Data
      * @var StatusResourceFactory
      */
     private StatusResourceFactory $statusResourceFactory;
+    private StatusResource\CollectionFactory $statusCollectionFactory;
     /**
      * Summary of storeManager
      * @var StoreManagerInterface
@@ -78,7 +85,9 @@ class Data
      * Summary of statusCollectionFactory
      * @var StatusResource\CollectionFactory
      */
-    private StatusResource\CollectionFactory $statusCollectionFactory;
+
+    protected ?int $storeId;
+
 
     /**
      * Set up dependency injection from core magento framework
@@ -93,25 +102,33 @@ class Data
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      */
     public function __construct(
+        Session $checkoutSession,
         ScopeConfigInterface $scopeConfig,
         UrlInterface $url,
         OrderRepository $orderRepository,
         TransactionFactory $transactionFactory,
         LoggerInterface $logger,
+        OrderManagementInterface $orderManager,
+        QuoteFactory $quoteFactory,
         StatusFactory $statusFactory,
         StatusResourceFactory $statusResourceFactory,
         \Magento\Sales\Model\ResourceModel\Order\Status\CollectionFactory $statusCollectionFactory,
         StoreManagerInterface $storeManager
     ) {
+        $this->checkoutSession = $checkoutSession;
         $this->scopeConfig = $scopeConfig;
         $this->url = $url;
         $this->orderRepository = $orderRepository;
         $this->transactionFactory = $transactionFactory;
         $this->logger = $logger;
+        $this->orderManager = $orderManager;
+        $this->quoteFactory = $quoteFactory;
         $this->statusFactory = $statusFactory;
         $this->statusResourceFactory = $statusResourceFactory;
         $this->statusCollectionFactory = $statusCollectionFactory;
         $this->storeManager = $storeManager;
+
+        $this->storeId = (int) $this->storeManager->getStore()->getId();
     }
 
     /**
@@ -183,7 +200,7 @@ class Data
         // quick filter base on currency, may not be needed after API update
         $currency = $this->scopeConfig->getValue('payment/nofrixion/pisp_currency', ScopeInterface::SCOPE_STORE, $storeId);
 
-        $settings = array_values(array_filter($settings, function($bank) use ($currency) {
+        $settings = array_values(array_filter($settings, function ($bank) use ($currency) {
             return $bank->currency === $currency;
         }));
         return $settings;
@@ -257,6 +274,16 @@ class Data
     {
         $client = $this->getPaymentRequestClient($storeId);
         return $client->getPaymentRequest($id);
+    }
+
+    /**
+     * deletePaymentRequest - deletes a payment request
+     * @param string $id The payment request Id
+     */
+    public function deletePaymentRequest(string $id)
+    {
+        $client = $this->getPaymentRequestClient($this->storeId);
+        return $client->deletePaymentRequest($id);
     }
 
     /**
@@ -398,6 +425,25 @@ class Data
         }
     }
 
+    /**
+     * restoreCart - loads an order back into the magento cart (quote)
+     * @param Magento\Sales\Model\Order $order
+     * @return void
+     */
+    public function restoreCart($order)
+    {
+        $quote = $this->quoteFactory->create()->loadByIdWithoutStore($order->getQuoteId());
+        if ($quote->getId()) {
+            $quote->setIsActive(1)->setReservedOrderId(null)->save();
+            $this->checkoutSession->replaceQuote($quote);
+
+            // if we restore order to cart, also cancel order
+            $this->orderManager->cancel($order->getId());
+            $order->setStatus(Order::STATE_CANCELED);
+            $order->addStatusToHistory(Order::STATE_CANCELED, '', false);
+            $order->save();
+        }
+    }
 
     /**
      * Summary of addNewStatusToState

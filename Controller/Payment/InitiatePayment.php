@@ -13,9 +13,7 @@ use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
 use Magento\Framework\Stdlib\CookieManagerInterface;
 use Magento\Framework\View\Result\PageFactory;
-use Magento\Quote\Model\QuoteFactory;
 use Magento\Sales\Model\Order;
-use Magento\Sales\Api\OrderManagementInterface;
 use Nofrixion\Payments\Helper\Data as NofrixionHelper;
 use Nofrixion\Payments\Model\OrderStatuses;
 use Nofrixion\Util\PreciseNumber;
@@ -35,9 +33,7 @@ class InitiatePayment implements \Magento\Framework\App\ActionInterface
     private CookieMetadataFactory $cookieMetadataFactory;
     private LoggerInterface $logger;
     private ManagerInterface $messageManager;
-    private OrderManagementInterface $orderManager;
     private PageFactory $resultPageFactory;
-    private QuoteFactory $quoteFactory;
     private RequestInterface $request;
     private SessionManagerInterface $sessionManager;
     private Session $checkoutSession;
@@ -50,9 +46,7 @@ class InitiatePayment implements \Magento\Framework\App\ActionInterface
         LoggerInterface $logger,
         ManagerInterface $messageManager,
         NofrixionHelper $helper,
-        OrderManagementInterface $orderManager,
         PageFactory $resultPageFactory,
-        QuoteFactory $quoteFactory,
         RedirectFactory $resultRedirectFactory,
         RequestInterface $request,
         Session $checkoutSession,
@@ -64,10 +58,8 @@ class InitiatePayment implements \Magento\Framework\App\ActionInterface
         $this->logger = $logger;
         $this->messageManager = $messageManager;
         $this->nofrixionHelper = $helper;
-        $this->orderManager = $orderManager;
         $this->request = $request;
         $this->resultPageFactory = $resultPageFactory;
-        $this->quoteFactory = $quoteFactory;
         $this->resultRedirectFactory = $resultRedirectFactory;
         $this->checkoutSession = $checkoutSession;
         $this->sessionManager = $sessionManager;
@@ -89,7 +81,7 @@ class InitiatePayment implements \Magento\Framework\App\ActionInterface
      */
     public function execute()
     {
-        xdebug_break();
+        //xdebug_break();
 
         $resultRedirect = $this->resultRedirectFactory->create();
 
@@ -145,30 +137,10 @@ class InitiatePayment implements \Magento\Framework\App\ActionInterface
 
     public function initializationFailureAction($order, $paymentRequest, $message){
         // restore cart
-        $this->restoreCart($order);
+        $this->nofrixionHelper->restoreCart($order);
         $this->messageManager->addWarningMessage($message);
 
-        // cancel order
-        $this->orderManager->cancel($order->getId());
-        $order->setStatus(Order::STATE_CANCELED);
-        $order->addStatusToHistory(Order::STATE_CANCELED, '', false);
-        $order->save();
-
-        // delete payment request
-
-    }
-
-    /**
-     * restoreCart - loads an order back into the magento cart (quote)
-     * @param Magento\Sales\Model\Order $order
-     * @return void
-     */
-    public function restoreCart($order)
-    {
-        $quote = $this->quoteFactory->create()->loadByIdWithoutStore($order->getQuoteId());
-        if ($quote->getId()) {
-            $quote->setIsActive(1)->setReservedOrderId(null)->save();
-            $this->checkoutSession->replaceQuote($quote);
-        }
+        // Can't delete payment request as it has events (pisp_initiate).
+        // $this->nofrixionHelper->deletePaymentRequest($paymentRequest['id']);
     }
 }
