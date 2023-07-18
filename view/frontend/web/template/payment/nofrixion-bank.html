@@ -34,7 +34,7 @@
             <div class="nfPaymentSection">
 
                 <div class="nfPrompt" data-bind="visible: !isPlaceOrderActionAllowed()">
-                    Note: Email and billing address are required before proceeding with order.
+                    <strong>Email and billing address are required</strong> before proceeding with order.
                 </div>
 
                 <div class="nfPrompt" data-bind="visible: isPlaceOrderActionAllowed()">
@@ -53,8 +53,8 @@
             </div>
 
             <div class="nfPaymentSection" data-bind="hidden: isCustomerLoggedIn">
-                <span>Warning: You are NOT logged in. If your financial institution has difficulties
-                    completing payment registering and signing in improves the chance of your cart being restored.
+                <span>Warning: You are NOT logged in. Registering an account and signing in improves the chance of 
+                    your cart being restored if your financial institution has difficulties processing the payment.
                 </span>
             </div>
 
