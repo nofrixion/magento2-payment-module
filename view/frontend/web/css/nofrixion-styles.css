@@ -1,77 +1,54 @@
 #spacer {
-    padding-left: 10%;
+  padding-left: 10%;
 }
 
 .hidden {
-    display: none;
-}
-
-div .bankButton {
-    border-width: 0px;
+  display: none;
 }
 
 .bankButton {
-    margin-bottom: 0.5rem;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-    border-radius: 0.5rem;
-    border-width: 1px;
-    border-color: #cbd5e0;
-    width: auto;
-    transition-duration: 0.2s;
-    transition-timing-function: ease-in-out;
-    border-color: #cbd5e0;
+  background: white;
+  border-radius: 0.5rem;
+  border-width: 1px !important;
+  border-color: #cccccc;
+  margin-bottom: 0.5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  transition-duration: 0.2s;
+  transition-timing-function: ease-in-out;
+  width: auto;
 }
 
 .bankButton:focus {
-    border-color: #a0aec0;
+  background: #eeeeee;
+  border: 1px solid #cccccc;
 }
 
 .bankButton:hover {
-    border-color: #a0aec0;
+  background: #eeeeee;
+  border: 1px solid #cccccc;
 }
 
-.cardButton {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    border-radius: 0.5rem;
-    border-width: 1px;
-    border-color: #cbd5e0;
-    width: auto;
-    transition-duration: 0.2s;
-    transition-timing-function: ease-in-out;
-    border-color: #cbd5e0;
+.nofrixion-prompt {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
-.cardButton:focus {
-    border-color: #a0aec0;
+.nofrixion-payment-section {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
-.cardButton:hover {
-    border-color: #a0aec0;
+.nofrixion-email-warning {
+  background-color: #FEE7EB;
+  padding: 16px;
 }
 
-.nfHeader {
-    font-weight: bold;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-}
-
-.nfInput {
-    width: 100px !important;
-}
-
-.nfPrompt {
-    padding-bottom: 1rem;
-}
-
-.nfPaymentSection {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+.nofrixion-login-prompt {
+  border: 1px solid #ccc;
+  padding: 16px;
 }
 
 @-webkit-keyframes animate-svg-stroke-1 {

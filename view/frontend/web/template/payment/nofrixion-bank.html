@@ -25,46 +25,46 @@
 
     </div>
 
-    <div class="payment-method-content">
+    <div class="payment-method-content nofrixion-payment-content">
         <!-- ko foreach: getRegion('messages') -->
         <!-- ko template: getTemplate() -->
         <!-- /ko -->
         <!--/ko-->
         <div id="payment-blocks" data-bind="hidden: isProcessing()">
-            <div class="nfPaymentSection">
+            <div class="nofrixion-payment-section nofrixion-email-warning"
+                data-bind="visible: !isPlaceOrderActionAllowed()">
+                Email and billing address are required before proceeding with payment.
+            </div>
 
-                <div class="nfPrompt" data-bind="visible: !isPlaceOrderActionAllowed()">
-                    <strong>Email and billing address are required</strong> before proceeding with order.
+            <div data-bind="visible: isPlaceOrderActionAllowed()">
+                <div class="nofrixion-prompt">
+                    Select your bank:
                 </div>
-
-                <div class="nfPrompt" data-bind="visible: isPlaceOrderActionAllowed()">
-                    Click your bank's logo to commence payment
-                </div>
-
-                <!-- ko foreach: getPayByBankProviders() -->
-                <button class="bankButton"" type=" button" disabled data-bind="
+                <div class="nofrixion-payment-section">
+                    <!-- ko foreach: getPayByBankProviders() -->
+                    <button class="bankButton"" type=" button" disabled data-bind="
                     click: $parent.initiatePayment,
                     css: {disabled: !$parent.isPlaceOrderActionAllowed()},
                     enable: ($parent.getCode() == $parent.isChecked())
-                ">
-                    <img data-bind="attr:{src: logo, alt: bankName}">
-                </button>
-                <!--/ko-->
+                    ">
+                        <img data-bind="attr:{src: logo, alt: bankName}">
+                    </button>
+                    <!--/ko-->
+                </div>
+                <div class="nofrixion-login-prompt" data-bind="hidden: isCustomerLoggedIn">
+                    <p><strong>You are NOT logged in.</strong></p>
+                    <p>Registering an account and signing in improves the chance of your cart being restored if
+                        your financial institution has difficulties processing the payment.</p>
+                </div>
             </div>
 
-            <div class="nfPaymentSection" data-bind="hidden: isCustomerLoggedIn">
-                <span>Warning: You are NOT logged in. Registering an account and signing in improves the chance of 
-                    your cart being restored if your financial institution has difficulties processing the payment.
-                </span>
-            </div>
-
-            <div class="payment-method-billing-address nfPaymentSection">
+            <div class="payment-method-billing-address nofrixion-payment-section">
                 <!-- ko foreach: $parent.getRegion(getBillingAddressFormName()) -->
                 <!-- ko template: getTemplate() --><!-- /ko -->
                 <!--/ko-->
             </div>
 
-            <div class="checkout-agreements-block nfPaymentSection">
+            <div class="checkout-agreements-block nofrixion-payment-section">
                 <!-- ko foreach: $parent.getRegion('before-place-order') -->
                 <!-- ko template: getTemplate() --><!-- /ko -->
                 <!--/ko-->
