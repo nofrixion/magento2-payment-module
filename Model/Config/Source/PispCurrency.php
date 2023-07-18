@@ -9,8 +9,8 @@ class PispCurrency implements \Magento\Framework\Data\OptionSourceInterface
     public function toOptionArray()
     {
         return [
-            ['value' => '0', 'label' => 'EUR'],
-            ['value' => '1', 'label' => 'GBP'],
+            ['value' => 'EUR', 'label' => 'Euro'],
+            ['value' => 'GBP', 'label' => 'GBP'],
         ];
     }
 
