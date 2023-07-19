@@ -31,6 +31,7 @@
         <!-- /ko -->
         <!--/ko-->
         <div id="payment-blocks" data-bind="hidden: isProcessing()">
+            
             <div class="nofrixion-payment-section nofrixion-email-warning"
                 data-bind="visible: !isPlaceOrderActionAllowed()">
                 Email and billing address are required before proceeding with payment.
@@ -54,7 +55,9 @@
                 <div class="nofrixion-login-prompt" data-bind="hidden: isCustomerLoggedIn">
                     <p><strong>You are NOT logged in.</strong></p>
                     <p>Registering an account and signing in improves the chance of your cart being restored if
-                        your financial institution has difficulties processing the payment.</p>
+                        your financial institution has difficulties processing the payment. <a class="action action-register action-help" data-bind="attr: {href: window.checkoutConfig.registerUrl}">
+                            <span data-bind="i18n: 'Create an account.'"></span>
+                        </a></p>
                 </div>
             </div>
 

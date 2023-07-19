@@ -96,5 +96,7 @@
 }
 
 #processing-animation {
-	text-align: center; margin: 8rem;
+	text-align: center; 
+  margin: 4rem;
+  height: 40%;
 }

@@ -3,15 +3,13 @@ define(
         'jquery',
         'ko',
         'Magento_Customer/js/model/customer',
-        'Magento_Ui/js/model/messages',
         'Magento_Checkout/js/view/payment/default'
     ],
-    function ($, ko, Customer, Messages, Component) {
+    function ($, ko, customer, Component) {
         'use strict';
         var self;
         var baseRedirectUrl = window.checkoutConfig.payment.nofrixion.paymentRedirectUrl;
         var payByBankProviderId = '';
-        //var buttonClicked = ko.observable(false);
         return Component.extend({
             defaults: {
                 template: 'Nofrixion_Payments/payment/nofrixion-bank'
@@ -22,17 +20,19 @@ define(
                 self = this;
                 self.payByBankProviders = window.checkoutConfig.payment.nofrixion.payByBankProviders;
             },
+            isCustomerLoggedIn: customer.isLoggedIn,
+            isProcessing: ko.observable(false),
+            redirectAfterPlaceOrder: false,
             initiatePayment: function (data, event) {
                 payByBankProviderId = data.personalInstitutionID;
-                self.isProcessing(true);
-                self.placeOrder(data, event);
+                if (self.placeOrder(data, event)) {
+                    // placeOrder returns true if form validates
+                    self.isProcessing(true);
+                };
             },
             getPayByBankProviders: function () {
                 return self.payByBankProviders;
             },
-            isCustomerLoggedIn: Customer.isLoggedIn,
-            isProcessing: ko.observable(false),
-            redirectAfterPlaceOrder: false,
             afterPlaceOrder: function () {
                 var url = baseRedirectUrl + '?bankId=' + encodeURIComponent(payByBankProviderId);
                 console.log('Redirecting to : ' + url);
