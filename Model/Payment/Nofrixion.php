@@ -18,7 +18,18 @@ class Nofrixion extends \Magento\Payment\Model\Method\AbstractMethod
 
     private NofrixionHelper $nofrixionHelper;
 
-    public function __construct(NofrixionHelper $nofrixionHelper, \Magento\Framework\Model\Context $context, \Magento\Framework\Registry $registry, \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory, \Magento\Framework\Api\AttributeValueFactory $customAttributeFactory, \Magento\Payment\Helper\Data $paymentData, \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, Logger $logger, \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null, \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null, array $data = [], DirectoryHelper $directory = null)
+    public function __construct(
+        NofrixionHelper $nofrixionHelper, 
+        \Magento\Framework\Model\Context $context, 
+        \Magento\Framework\Registry $registry, 
+        \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory, 
+        \Magento\Framework\Api\AttributeValueFactory $customAttributeFactory, 
+        \Magento\Payment\Helper\Data $paymentData, 
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, 
+        Logger $logger, 
+        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null, 
+        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null, 
+        array $data = [], DirectoryHelper $directory = null)
     {
         parent::__construct($context, $registry, $extensionFactory, $customAttributeFactory, $paymentData, $scopeConfig, $logger, $resource, $resourceCollection, $data, $directory);
         $this->nofrixionHelper = $nofrixionHelper;

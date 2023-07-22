@@ -26,8 +26,16 @@ class ReturnAfterPayment implements \Magento\Framework\App\ActionInterface
     private LoggerInterface $logger;
     private RedirectFactory $resultRedirectFactory;
 
-    public function __construct(RequestInterface $request, LoggerInterface $logger, UrlInterface $url, RedirectFactory $resultRedirectFactory, PageFactory $resultPageFactory, Data $nofrixionHelper, OrderFactory $orderFactory, Session $checkoutSession)
-    {
+    public function __construct(
+        RequestInterface $request,
+        LoggerInterface $logger,
+        UrlInterface $url,
+        RedirectFactory $resultRedirectFactory,
+        PageFactory $resultPageFactory,
+        Data $nofrixionHelper,
+        OrderFactory $orderFactory,
+        Session $checkoutSession
+    ) {
         $this->request = $request;
         $this->resultRedirectFactory = $resultRedirectFactory;
         $this->url = $url;

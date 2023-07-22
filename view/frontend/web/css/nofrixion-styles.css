@@ -1,3 +1,102 @@
 #spacer {
-    padding-left: 10%;
+  padding-left: 10%;
+}
+
+.hidden {
+  display: none;
+}
+
+.bankButton {
+  background: white;
+  border-radius: 0.5rem;
+  border-width: 1px !important;
+  border-color: #cccccc;
+  margin-bottom: 0.5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  transition-duration: 0.2s;
+  transition-timing-function: ease-in-out;
+  width: auto;
+}
+
+.bankButton:focus {
+  background: #eeeeee;
+  border: 1px solid #cccccc;
+}
+
+.bankButton:hover {
+  background: #eeeeee;
+  border: 1px solid #cccccc;
+}
+
+.nofrixion-prompt {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.nofrixion-payment-section {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.nofrixion-email-warning {
+  background-color: #FEE7EB;
+  padding: 16px;
+}
+
+.nofrixion-login-prompt {
+  border: 1px solid #ccc;
+  padding: 16px;
+}
+
+@-webkit-keyframes animate-svg-stroke-1 {
+    0% {
+      stroke-dashoffset: 261.02130126953125px;
+      stroke-dasharray: 261.02130126953125px;
+    }
+  
+    50% {
+      stroke-dashoffset: 0px;
+      stroke-dasharray: 261px;
+    }
+  
+    100% {
+      stroke-dashoffset: -261px;
+      stroke-dasharray: 261px;
+    }
+  }
+  
+  @keyframes animate-svg-stroke-1 {
+  
+    0% {
+      stroke-dashoffset: 261px;
+      stroke-dasharray: 261px;
+    }
+  
+    50% {
+      stroke-dashoffset: 0px;
+      stroke-dasharray: 261px;
+    }
+  
+    100% {
+      stroke-dashoffset: -261px;
+      stroke-dasharray: 261px;
+    }
+  }
+  
+  .svg-elem-1 {
+    -webkit-animation: animate-svg-stroke-1 2s cubic-bezier(0.65, 0.05, 0.36, 1) 0s both infinite;
+            animation: animate-svg-stroke-1 2s cubic-bezier(0.65, 0.05, 0.36, 1) 0s both infinite;
+  }
+
+.payment-method-processing-text {
+	font-family: Inter, sans-serif; color: #042A31; font-size: 1.5rem; margin-top: 1rem;
+}
+
+#processing-animation {
+	text-align: center; 
+  margin: 4rem;
+  height: 40%;
 }

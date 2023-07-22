@@ -1,40 +1,78 @@
-<?xml version="1.0" ?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
 	<system>
-		<section id="payment" sortOrder="1000" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-			<group id="nofrixion" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+		<section id="payment" sortOrder="1000" showInWebsite="1" showInStore="1" showInDefault="1"
+			translate="label">
+			<group id="nofrixion" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1"
+				translate="label">
 				<label>Nofrixion</label>
-				<field id="active" type="select" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+				<field id="active" type="select" sortOrder="10" showInWebsite="1"
+					showInStore="1" showInDefault="1" translate="label">
 					<label>Enabled</label>
 					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
 				</field>
-                <field id="mode" type="select" sortOrder="15" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                    <label>Mode</label>
-                    <source_model>Nofrixion\Payments\Model\Config\Source\Mode</source_model>
-                </field>
-				<field id="title" type="text" sortOrder="20" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-					<label>Title</label>
+				<field id="mode" type="select" sortOrder="15" showInWebsite="1" showInStore="1"
+					showInDefault="1" translate="label">
+					<label>Mode</label>
+					<source_model>Nofrixion\Payments\Model\Config\Source\Mode</source_model>
 				</field>
-                <field id="api_token_production" type="text" sortOrder="27" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                    <label>Production API Token</label>
-                </field>
-                <field id="api_token_sandbox" type="text" sortOrder="28" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                    <label>Sandbox API Token</label>
-                </field>
-                <field id="payment_options" type="select" sortOrder="30" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                    <label>Payment Options</label>
-                    <source_model>Nofrixion\Payments\Model\Config\Source\PaymentOptions</source_model>
-                </field>
-				<field id="allowspecific" type="allowspecific" sortOrder="40" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+				<field id="api_token_production" type="text" sortOrder="16" showInWebsite="1"
+					showInStore="1" showInDefault="1" translate="label">
+					<label>Production API Token</label>
+					<depends>
+						<field id="mode">1</field>
+					</depends>
+				</field>
+				<field id="api_token_sandbox" type="text" sortOrder="17" showInWebsite="1"
+					showInStore="1" showInDefault="1" translate="label">
+					<label>Sandbox API Token</label>
+					<depends>
+						<field id="mode">0</field>
+					</depends>
+				</field>
+				<field id="payment_options" type="select" sortOrder="20" showInWebsite="1"
+					showInStore="1" showInDefault="1" translate="label">
+					<label>Payment Options</label>
+					<source_model>Nofrixion\Payments\Model\Config\Source\PaymentOptions</source_model>
+				</field>
+				<field id="title" type="text" sortOrder="30" showInWebsite="1" showInStore="1"
+					showInDefault="1" translate="label">
+					<label>Pay by Bank Title</label>
+					<tooltip>The name the customer sees for this payment method at checkout.</tooltip>
+					<depends>
+						<field id="payment_options" separator="|">pisp|card,pisp</field>
+					</depends>
+				</field>
+				<field id="pisp_currency" type="select" sortOrder="31" showInWebsite="1" showInStore="1"
+					showInDefault="1" translate="label">
+					<label>Pay by Bank Currency</label>
+					<depends>
+						<field id="payment_options" separator="|">pisp|card,pisp</field>
+					</depends>
+					<source_model>Nofrixion\Payments\Model\Config\Source\PispCurrency</source_model>
+				</field>
+				<field id="cards_title" type="text" sortOrder="33" showInWebsite="1" showInStore="1"
+					showInDefault="1" translate="label">
+					<label>Cards Title</label>
+					<tooltip>The name the customer sees for this payment method at checkout.</tooltip>
+					<depends>
+						<field id="payment_options" separator="|">card|card,pisp</field>
+					</depends>
+				</field>
+				<field id="allowspecific" type="allowspecific" sortOrder="40" showInWebsite="1"
+					showInStore="1" showInDefault="1" translate="label">
 					<label>Payment from Applicable Countries</label>
 					<source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
 				</field>
-				<field id="specificcountry" type="multiselect" sortOrder="50" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+				<field id="specificcountry" type="multiselect" sortOrder="50" showInWebsite="1"
+					showInStore="1" showInDefault="1" translate="label">
 					<label>Payment from Applicable Countries</label>
 					<source_model>Magento\Directory\Model\Config\Source\Country</source_model>
 					<can_be_empty>1</can_be_empty>
 				</field>
-				<field id="sort_order" type="text" sortOrder="60" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+				<field id="sort_order" type="text" sortOrder="60" showInWebsite="1" showInStore="1"
+					showInDefault="1" translate="label">
 					<label>Sort Order</label>
 				</field>
 			</group>

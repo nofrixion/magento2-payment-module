@@ -1,0 +1,85 @@
+<div class="payment-method" data-bind="css: {'_active': (getCode() == isChecked())}">
+    <div class="payment-method-title field choice">
+        <input type="radio" name="payment[method]" class="radio"
+            data-bind="attr: {'id': getCode()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()" />
+
+        <label data-bind="attr: {'for': getCode()}" class="label"><span data-bind="text: getTitle()"></span></label>
+
+        <!-- BEGIN Nofrixion tooltip -->
+        <span id="spacer"></span>
+        <span class="nofrixion-tooltip">
+            <a href="javascript:void(0)" class="tooltip-toggle" data-bind="text: 'What is ' + getTitle() + '?'"></a>
+            <span class="tooltip-content">
+                <span style="display: inline-block; vertical-align: top; padding: 1em">
+                    <p>Pay by bank allows you to make a payment directly from your bank account without using a credit
+                        card or other payment methods.</p>
+                </span>
+                <span style="display: inline-block">
+                    <img src="https://cdn.nofrixion.com/img/paybybank.gif" alt="Pay by bank animation.">
+                    </img>
+                </span>
+            </span>
+        </span>
+
+        <!-- END Nofrixion tooltip -->
+
+    </div>
+
+    <div class="payment-method-content nofrixion-payment-content">
+        <!-- ko foreach: getRegion('messages') -->
+        <!-- ko template: getTemplate() -->
+        <!-- /ko -->
+        <!--/ko-->
+        <div id="payment-blocks" data-bind="hidden: isProcessing()">
+
+            <div class="nofrixion-payment-section nofrixion-email-warning"
+                data-bind="visible: !isPlaceOrderActionAllowed()">
+                Email and billing address are required before proceeding with payment.
+            </div>
+
+            <div data-bind="visible: isPlaceOrderActionAllowed()">
+                <div class="nofrixion-prompt">
+                    Select your bank:
+                </div>
+                <div class="nofrixion-payment-section">
+                    <!-- ko foreach: getPayByBankProviders() -->
+                    <button class="bankButton"" type=" button" disabled data-bind="
+                    click: $parent.initiatePayment,
+                    css: {disabled: !$parent.isPlaceOrderActionAllowed()},
+                    enable: ($parent.getCode() == $parent.isChecked())
+                    ">
+                        <img data-bind="attr:{src: logo, alt: bankName}">
+                    </button>
+                    <!--/ko-->
+                </div>
+                <div class="nofrixion-login-prompt" data-bind="hidden: isCustomerLoggedIn">
+                    <p><strong>You are NOT logged in.</strong></p>
+                    <p>Registering an account and signing in improves the chance of your cart being restored if
+                        your financial institution has difficulties processing the payment. <a class="action action-register action-help" data-bind="attr: {href: window.checkoutConfig.registerUrl}">
+                            <span data-bind="i18n: 'Create an account.'"></span>
+                        </a></p>
+                </div>
+            </div>
+
+            <div class="payment-method-billing-address nofrixion-payment-section">
+                <!-- ko foreach: $parent.getRegion(getBillingAddressFormName()) -->
+                <!-- ko template: getTemplate() --><!-- /ko -->
+                <!--/ko-->
+            </div>
+
+            <div class="checkout-agreements-block nofrixion-payment-section">
+                <!-- ko foreach: $parent.getRegion('before-place-order') -->
+                <!-- ko template: getTemplate() --><!-- /ko -->
+                <!--/ko-->
+            </div>
+        </div>
+        <div id="processing-animation" data-bind="visible: isProcessing()">
+            <svg width="64" height="64" viewBox="0 0 79 79" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M5 29.381V48.8095C5 53.2278 8.58172 56.8095 13 56.8095V56.8095C17.4183 56.8095 21 53.2278 21 48.8095V13C21 8.58171 24.5817 5 29 5V5C33.4183 5 37 8.58172 37 13V61C37 65.4183 40.5817 69 45 69V69C49.4183 69 53 65.4183 53 61V25.1905C53 20.7722 56.5817 17.1905 61 17.1905V17.1905C65.4183 17.1905 69 20.7722 69 25.1905V44.619"
+                    stroke="#E0EBEB" stroke-width="8" stroke-linecap="round" class="svg-elem-1"></path>
+            </svg>
+            <p class="payment-method-processing-text" data-bind="i18n: 'Initialising payment'"></p>
+        </div>
+    </div>
+</div>

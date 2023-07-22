@@ -9,19 +9,19 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
 use Magento\Store\Model\StoreManagerInterface;
-use Nofrixion\Payments\Helper\Data as NoFrixionHelper;
+use Nofrixion\Payments\Helper\Data as NofrixionHelper;
 use Psr\Log\LoggerInterface;
 
 class In implements ActionInterface
 {
     private LoggerInterface $logger;
-    private NoFrixionHelper $nofrixionHelper;
+    private NofrixionHelper $nofrixionHelper;
     private OrderSender $orderSender;
     private RequestInterface $request;
     private StoreManagerInterface $storeManager;
     private JsonFactory $resultJsonFactory;
 
-    public function __construct(RequestInterface $request, NoFrixionHelper $helper, OrderSender $orderSender, StoreManagerInterface $storeManager, JsonFactory $resultJsonFactory, LoggerInterface $logger)
+    public function __construct(RequestInterface $request, NofrixionHelper $helper, OrderSender $orderSender, StoreManagerInterface $storeManager, JsonFactory $resultJsonFactory, LoggerInterface $logger)
     {
         $this->request = $request;
         $this->nofrixionHelper = $helper;
