@@ -56,7 +56,7 @@ To remove the payment module:
 
 ## Configuration ##
 
-See the [NoFrixion guide on configuring the `magento2-payments-module`(https://docs.nofrixion.com/docs/nofrixion-magento-2-payment-module)]
+See the [NoFrixion guide on configuring the `magento2-payments-module`](https://docs.nofrixion.com/docs/nofrixion-magento-2-payment-module)
 
 ## Known Issues ##
 
