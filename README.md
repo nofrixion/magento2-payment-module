@@ -56,11 +56,7 @@ To remove the payment module:
 
 ## Configuration ##
 
-Please find all configuration opens in Magento Admin > Stores > Configuration > Sales > Payment Methods > NoFrixion
-
-- Enter your API key
-- Set the mode to production or sandbox
-- Change the other settings to your liking
+See the [NoFrixion guide on configuring the `magento2-payments-module`(https://docs.nofrixion.com/docs/nofrixion-magento-2-payment-module)]
 
 ## Known Issues ##
 
